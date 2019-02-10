@@ -7,7 +7,8 @@
 # the default umask is set in /etc/profile; for setting the umask
 # for ssh logins, install and configure the libpam-umask package.
 #umask 022
-export PATH=$PATH:~/.scripts/
+# Adds "~/.scripts" and all folders to $PATH
+export PATH="$PATH:$(du "$HOME/.scripts/" | cut -f2 | tr '\n' ':')"
 export FILE="ranger"
 export BROWSER="firefox"
 export TERMINAL="st"
