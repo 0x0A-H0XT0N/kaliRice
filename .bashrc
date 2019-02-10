@@ -1,3 +1,15 @@
+
+
+#   _   _ _______   _______ _____ _   _ 
+#  | | | |  _  \ \ / /_   _|  _  | \ | |
+#  | |_| | |/' |\ V /  | | | |/' |  \| |
+#  |  _  |  /| |/   \  | | |  /| | . ` |
+#  | | | \ |_/ / /^\ \ | | \ |_/ / |\  |
+#  \_| |_/\___/\/   \/ \_/  \___/\_| \_/
+#                                       
+#                                       
+
+
 # ~/.bashrc: executed by bash(1) for non-login shells.
 # see /usr/share/doc/bash/examples/startup-files (in the package bash-doc)
 # for examples
