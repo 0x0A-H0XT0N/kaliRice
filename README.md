@@ -1,3 +1,4 @@
-# .cfg
-These are my dotfiles! first time trying to manage a repository!
+# KaliRice!
+These are my dotfiles for Kali Linux.
+This repository is managed of yadm
 
