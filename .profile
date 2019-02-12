@@ -1,5 +1,3 @@
-
-
 #   _   _ _______   _______ _____ _   _ 
 #  | | | |  _  \ \ / /_   _|  _  | \ | |
 #  | |_| | |/' |\ V /  | | | |/' |  \| |
@@ -21,10 +19,12 @@
 #umask 022
 # Adds "~/.scripts" and all folders to $PATH
 export PATH="$PATH:$(du "$HOME/.scripts/" | cut -f2 | tr '\n' ':')"
+export PATH="$PATH:/bin/lscript"
 export FILE="ranger"
 export BROWSER="firefox"
 export TERMINAL="st"
 export EDITOR="vim"
+
 
 # if running bash
 if [ -n "$BASH_VERSION" ]; then
