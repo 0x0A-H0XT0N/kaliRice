@@ -1,5 +1,3 @@
-
-
 #   _   _ _______   _______ _____ _   _ 
 #  | | | |  _  \ \ / /_   _|  _  | \ | |
 #  | |_| | |/' |\ V /  | | | |/' |  \| |
@@ -9,49 +7,43 @@
 #                                       
 #                                       
 
-
-# ~/.bashrc: executed by bash(1) for non-login shells.
-# see /usr/share/doc/bash/examples/startup-files (in the package bash-doc)
-# for examples
-
 # If not running interactively, don't do anything
 case $- in
     *i*) ;;
       *) return;;
 esac
 
-# for dotfiles config using git bare
-alias config='/usr/bin/git --git-dir=/home/h0xt0n/.cfg/ --work-tree=/home/h0xt0n'
-
-# don't put duplicate lines or lines starting with space in the history.
-# See bash(1) for more options
-HISTCONTROL=ignoreboth
-
+#################### HISTORY AJUSTS 
 # append to the history file, don't overwrite it
 shopt -s histappend
-
 # for setting history length see HISTSIZE and HISTFILESIZE in bash(1)
 HISTSIZE=1000
 HISTFILESIZE=2000
+HISTSIZE= HISTFILESIZE= # Infinite history.
+#################### END
 
-export PATH=$PATH:/bin/lscript
 
-# Import colorscheme from 'wal' asynchronously
-# &   # Run the process in the background.
-# ( ) # Hide shell job control messages.
-# (cat ~/.cache/wal/sequences &)
-
-# To add support for TTYs this line can be optionally added.
+#################### PYWAL COLOR SCHEME 
+# support for TTYs (optional)
 source ~/.cache/wal/colors-tty.sh
+# support for dmenu (optional)
+. "${HOME}/.cache/wal/colors.sh"
+alias dmen='dmenu_run -nb "$color0" -nf "$color15" -sb "$color1" -sf "$color15"'
+#################### END
 
+
+#################### HANDY HACKS
 # usefull stuff
 shopt -s autocd #Allows you to cd into directory merely by typing the directory name.
-HISTSIZE= HISTFILESIZE= # Infinite history.
-
-
 # check the window size after each command and, if necessary,
 # update the values of LINES and COLUMNS.
 shopt -s checkwinsize
+#################### END
+
+
+
+
+#################### DO NOT MODIFY!!! SYS DEFAULTS
 
 # If set, the pattern "**" used in a pathname expansion context will
 # match all files and zero or more directories and subdirectories.

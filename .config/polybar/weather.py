@@ -1,28 +1,27 @@
-#!/usr/bin/env python
-
-import json
-import urllib
-import urllib.parse
-import urllib.request
-import os
+import pyowm
 
 
 def main():
-    city = "College Station"
-    api_key = "da1f3c25743ea88ae4cfa4b006e3eee0"
-
+    """
+    Gets temperature of 'city_name' in 'celsius' using the 'api_key', only for python 3.X.
+    :return: Float value, using ""Degrees"" character.
+    """
     try:
-        data = urllib.parse.urlencode({'q': city, 'appid': api_key, 'units': 'imperial'})
-        weather = json.loads(urllib.request.urlopen(
-            'http://api.openweathermap.org/data/2.5/weather?' + data)
-            .read())
-        desc = weather['weather'][0]['description'].capitalize()
-        temp = int(float(weather['main']['temp']))
-        #return '{}, {}°F'.format(desc, temp)
-        return '{}°F'.format(temp)
+        api_key = "b5bcf5fa41abed55ddf71ea40aa6f4ea"
+        city_name = "Artur Nogueira,BR"
+        # city_name = "Campinas,BR"
+
+        owm = pyowm.OWM(api_key)
+        weather_at_place = owm.weather_at_place(city_name)
+        get_temp_celsius = weather_at_place.get_weather().get_temperature("celsius")
+        # format == {'temp_max': 10.5, 'temp': 9.7, 'temp_min': 9.0}
+        weather_int_value = get_temp_celsius['temp']
+        print("%s: %.1f°C" % (city_name, weather_int_value))
+        # return "%s: %.1f°C" % (city_name, weather_int_value)
     except:
-        return ''
+        print("ERROR!")
+        # return "ERROR!"
 
 
-if __name__ == "__main__":
-	print(main())
+if __name__ == '__main__':
+    main()

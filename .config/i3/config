@@ -39,24 +39,38 @@ set_from_resource $darkwhite    color7  #000000
 set_from_resource $white        color15 #000000
 set $transparent                #00000000
 
-# bar config
-bar {
-        font pango:mono, 10
-	colors {
-                        background $darkblack
-                        statusline $darkwhite
-                        separator $cyan
-                        focused_workspace  $blue $darkblue $darkblack
-                        active_workspace   $blue $blue $darkwhite
-                        inactive_workspace $darkblack $darkblack $white
-                        urgent_workspace   $darkblack $darkblack $white
+# pywal color escheme
+# Set colors from Xresources
+set_from_resource $fg i3wm.color7 #f0f0f0
+set_from_resource $bg i3wm.color2 #f0f0f0
 
-		}
-	status_command i3blocks
-	position top
-	mode dock
-	modifier None
-    }
+# class                 border  backgr. text indicator child_border
+client.focused          $bg     $bg     $fg  $bg       $bg
+client.focused_inactive $bg     $bg     $fg  $bg       $bg
+client.unfocused        $bg     $bg     $fg  $bg       $bg
+client.urgent           $bg     $bg     $fg  $bg       $bg
+client.placeholder      $bg     $bg     $fg  $bg       $bg
+
+client.background       $bg
+
+# bar config
+#bar {
+#        font pango:mono, 10
+#	colors {
+#                        background $darkblack
+#                        statusline $darkwhite
+#                        separator $cyan
+#                        focused_workspace  $blue $darkblue $darkblack
+#                        active_workspace   $blue $blue $darkwhite
+#                        inactive_workspace $darkblack $darkblack $white
+#                        urgent_workspace   $darkblack $darkblack $white
+#
+#		}
+#	status_command i3blocks
+#	position top
+#	mode dock
+#	modifier None
+#    }
 
 
 # Starting Scripts
@@ -70,6 +84,8 @@ exec --no-startup-id		wal -R -o "xcompmgr"
 exec --no-startup-id		xcompmgr 
 # noip2
 exec --no-startup-id 		noip2
+# polybar
+exec --no-startup-id 		~/.config/polybar/launch.sh
 
 # Startup applications
 # exec --no-startup-id spotify
@@ -98,7 +114,8 @@ bindsym $mod+Shift+Escape	exec --no-startup-id prompt "Exit i3?" "i3-msg exit"
 bindsym $mod+Shift+BackSpace	exec --no-start-up-id prompt "Reboot?" "$reboot"
 
 bindsym $mod+Shift+q kill
-bindsym $mod+d exec dmenu_run
+# dmenu with pywal color compatibility
+bindsym $mod+d exec dmenu_run -nb "$fg" -nf "$bg" -sb "$bg" -sf "$fg"
 
 # Shortcuts for applications
 
