@@ -44,12 +44,12 @@ set $transparent                #00000000
 set_from_resource $fg i3wm.color7 #f0f0f0
 set_from_resource $bg i3wm.color2 #f0f0f0
 
-# class                 border  backgr. text indicator child_border
-client.focused          $bg     $bg     $fg  $bg       $bg
-client.focused_inactive $bg     $bg     $fg  $bg       $bg
-client.unfocused        $bg     $bg     $fg  $bg       $bg
-client.urgent           $bg     $bg     $fg  $bg       $bg
-client.placeholder      $bg     $bg     $fg  $bg       $bg
+# class                 border  	backgr. 	text 		indicator 	child_border
+client.focused          #E91E63     #E91E63     #E91E63 	#4914e8     #E91E63
+client.focused_inactive #cc411e     #cc411e 	#cc411e 	#cc411e   	#cc411e
+client.unfocused        #cc411e     #cc411e 	#cc411e 	#cc411e   	#cc411e
+client.urgent           $bg     	$bg  	    $fg  		$bg       	$bg
+client.placeholder      #4914e8		#4914e8		#4914e8		#4914e8		#5d0c27
 
 client.background       $bg
 
@@ -115,7 +115,12 @@ bindsym $mod+Shift+BackSpace	exec --no-start-up-id prompt "Reboot?" "$reboot"
 
 bindsym $mod+Shift+q kill
 # dmenu with pywal color compatibility
-bindsym $mod+d exec dmenu_run -nb "$fg" -nf "$bg" -sb "$bg" -sf "$fg"
+#bindsym $mod+d exec dmenu_run -nb "$fg" -nf "$bg" -sb "$bg" -sf "$fg"
+
+
+# ROFI keybind
+bindsym $mod+d exec  "rofi -combi-modi window,drun -show combi -modi combi -show-icons -drun-icon-theme papirus-folders-master"
+
 
 # Shortcuts for applications
 
