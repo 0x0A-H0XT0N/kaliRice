@@ -89,9 +89,9 @@ exec --no-startup-id 		~/.config/polybar/launch.sh
 
 # Startup applications
 # exec --no-startup-id spotify
-# exec --no-startup-id stacer
+exec --no-startup-id stacer
 exec --no-startup-id flameshot
-exec --no-startup-id nixnote2 --startMinimized
+# exec --no-startup-id nixnote2 --startMinimized
 
 # Auto assign for applications and workspaces
 for_window 	[title="Spotfiy"] 		$ws4
