@@ -1,2 +1,2 @@
-##Most of this scripts are from "Luke Smith" (https://github.com/LukeSmithxyz)
+Most of this scripts are from "Luke Smith" (https://github.com/LukeSmithxyz)
 
