@@ -54,23 +54,23 @@ client.placeholder      #4914e8		#4914e8		#4914e8		#4914e8		#5d0c27
 client.background       $bg
 
 # bar config
-#bar {
-#        font pango:mono, 10
-#	colors {
-#                        background $darkblack
-#                        statusline $darkwhite
-#                        separator $cyan
-#                        focused_workspace  $blue $darkblue $darkblack
-#                        active_workspace   $blue $blue $darkwhite
-#                        inactive_workspace $darkblack $darkblack $white
-#                        urgent_workspace   $darkblack $darkblack $white
-#
-#		}
-#	status_command i3blocks
-#	position top
-#	mode dock
-#	modifier None
-#    }
+bar {
+        font pango:mono, 10
+	colors {
+                        background $darkblack
+                        statusline $darkwhite
+                        separator $cyan
+                        focused_workspace  $blue $darkblue $darkblack
+                        active_workspace   $blue $blue $darkwhite
+                        inactive_workspace $darkblack $darkblack $white
+                        urgent_workspace   $darkblack $darkblack $white
+
+		}
+	status_command i3blocks
+	position top
+	mode dock
+	modifier None
+    }
 
 
 # Starting Scripts
@@ -85,7 +85,7 @@ exec --no-startup-id		xcompmgr
 # noip2
 exec --no-startup-id 		noip2
 # polybar
-exec --no-startup-id 		~/.config/polybar/launch.sh
+# exec --no-startup-id 		~/.config/polybar/launch.sh
 
 # Startup applications
 # exec --no-startup-id spotify

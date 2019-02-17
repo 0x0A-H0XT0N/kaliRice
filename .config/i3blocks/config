@@ -2,6 +2,13 @@ command=~/.scripts/statusbar/$BLOCK_NAME
 separator_block_width=15
 markup=pango
 
+[weather]
+label= 
+command=python3 ~/.scripts/statusbar/weather.py | cut -d " " -f3
+interval=20
+color=#E91E63
+align=center
+
 [spotify]
 command=spotifycli --status
 interval=10
