@@ -36,7 +36,7 @@ alias dmen='dmenu_run -nb "$color0" -nf "$color15" -sb "$color1" -sf "$color15"'
 
 # ssh aliases
 alias war0fPr0xy='ssh -p2364 root@192.168.0.3'
-alias rpi='ssh -p2364 root@pr0xy.sytes.net'
+alias rpi='ssh -p2364 root@kalashnikov.sytes.net'
 
 # youtube-dl
 alias yt="youtube-dl --add-metadata -i" # Download video link
