@@ -42,5 +42,8 @@ alias rpi='ssh -p2364 root@kalashnikov.sytes.net'
 alias yt="youtube-dl --add-metadata -i" # Download video link
 alias yta="yt -x -f bestaudio/best" # Download only audio
 
+# jetbrains IDEs
 
+#alias charm="~/code/ide/pycharm-2019.1.3/bin/pycharm.sh"
+#alias webstorm="~/code/ide/WebStorm-191.7479.14/bin/webstorm.sh"
 
