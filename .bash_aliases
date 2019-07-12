@@ -38,6 +38,9 @@ alias dmen='dmenu_run -nb "$color0" -nf "$color15" -sb "$color1" -sf "$color15"'
 alias war0fPr0xy='ssh -p2364 root@192.168.0.3'
 alias rpi='ssh -p2364 root@kalashnikov.sytes.net'
 
+# mgtow-archive
+alias mgtow-archive="python3 ~/code/projects/mgtow-archive/mgtow-archive.py"
+
 # youtube-dl
 alias yt="youtube-dl --add-metadata -i" # Download video link
 alias yta="yt -x -f bestaudio/best" # Download only audio

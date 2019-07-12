@@ -22,6 +22,7 @@ export PATH="$PATH:$(du "$HOME/.scripts/" | cut -f2 | tr '\n' ':')"
 export PATH="$PATH:/bin/lscript"
 export FILE="ranger"
 export BROWSER="firefox"
+# export BROWSER="chromium"
 export TERMINAL="st"
 export EDITOR="vim"
 
