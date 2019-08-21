@@ -128,6 +128,7 @@ bindsym $mod+Shift+f		exec --no-startup-id 	$BROWSER
 bindsym $mod+ccedilla		exec $term -e 		/bin/lscript/l
 bindsym $mod+Control+l		exec $term -e 		/bin/lscript/l
 bindsym $mod+r	 		exec $term -e 		$FILE
+bindsym $mod+Shift+r		exec 			nautilus
 
 bindsym $mod+s			exec --no-startup-id 	spotify
 bindsym $mod+Shift+a		exec $term -e 		alsamixer
@@ -238,9 +239,9 @@ bindsym $mod+Shift+8 	move container to workspace $ws8
 bindsym $mod+Shift+9 	move container to workspace $ws9
 bindsym $mod+Shift+0 	move container to workspace $ws10
 
-bindsym $mod+Shift+c reload
-bindsym $mod+Shift+r restart
-bindsym $mod+Shift+e exec "i3-nagbar -t warning -m 'You pressed the exit shortcut. Do you really want to exit i3? This will end your X session.' -B 'Yes, exit i3' 'i3-msg exit'"
+bindsym $mod+Shift+c 		reload
+bindsym $mod+Shift+Control+r 	restart
+bindsym $mod+Shift+e 		exec "i3-nagbar -t warning -m 'You pressed the exit shortcut. Do you really want to exit i3? This will end your X session.' -B 'Yes, exit i3' 'i3-msg exit'"
 
 # resize window (you can also use the mouse for that)
 mode "resize" {
