@@ -88,13 +88,19 @@ exec --no-startup-id 		noip2
 exec --no-startup-id 		redshift
 
 # Startup applications
+exec --no-startup-id discord
+exec --no-startup-id qbittorrent
 exec --no-startup-id stacer
+exec --no-startup-id spotify
 exec --no-startup-id flameshot
 exec --no-startup-id nixnote2 --startMinimized
 
 # Auto assign for applications and workspaces
-assign 		[title="Stacer"] 		$ws4
-assign 		[class="Steam"] 		$ws5
+for_window	[class="Spotify"] 		move to workspace 5
+assign 		[class="discord"]		$ws8
+assign 		[class="qBittorrent"]		$ws9
+assign 		[class="stacer"] 		$ws4
+assign 		[class="Steam"] 		$ws7
 for_window 	[title="Steam - News"] 		floating enable
 for_window 	[title="Friends List"] 		floating enable
 for_window 	[title="PuTTY Configuration"]	floating enable
