@@ -39,7 +39,7 @@ alias war0fPr0xy='ssh -p2364 root@192.168.0.3'
 alias rpi='ssh -p2364 root@kalashnikov.sytes.net'
 
 # mgtow-archive
-alias mgtow-archive="python3 ~/code/projects/mgtow-archive/mgtow-archive.py"
+alias content-archiver="python3 ~/code/projects/content-archiver/content-archiver.py"
 
 # youtube-dl
 alias yt="youtube-dl --add-metadata -i" # Download video link
