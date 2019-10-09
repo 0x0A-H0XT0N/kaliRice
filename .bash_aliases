@@ -22,6 +22,9 @@ alias google="ping -c4 8.8.8.8"
 # handy for notebooks
 alias battery="upower -i $(upower -e | grep 'BAT') | grep -E 'percentage'"
 
+# copy output to clipboard
+alias copy="xclip -i -selection clipboard"
+
 # more aliases 
 alias j="jobs -l"
 alias e="vim"
@@ -37,6 +40,7 @@ alias dmen='dmenu_run -nb "$color0" -nf "$color15" -sb "$color1" -sf "$color15"'
 # ssh aliases
 alias war0fPr0xy='ssh -p2364 root@192.168.0.3'
 alias rpi='ssh -p2364 root@kalashnikov.sytes.net'
+alias warMachine='ssh -p2364 h0xt0n@192.168.0.2'
 
 # mgtow-archive
 alias content-archiver="python3 ~/code/projects/content-archiver/content-archiver.py"
