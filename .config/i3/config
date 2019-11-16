@@ -89,6 +89,7 @@ exec --no-startup-id 		redshift
 
 # Startup applications
 exec --no-startup-id discord
+exec --no-startup-id riot-web
 exec --no-startup-id qbittorrent
 exec --no-startup-id stacer
 exec --no-startup-id spotify
@@ -98,6 +99,7 @@ exec --no-startup-id nixnote2 --startMinimized
 # Auto assign for applications and workspaces
 for_window	[class="Spotify"] 		move to workspace 5
 assign 		[class="discord"]		$ws8
+assign		[class="Riot"]			$ws8
 assign 		[class="qBittorrent"]		$ws9
 assign 		[class="stacer"] 		$ws4
 assign 		[class="Steam"] 		$ws7
@@ -113,9 +115,13 @@ bindsym $mod+Shift+space 	floating toggle
 bindsym $mod+space	 	focus mode_toggle
 
 bindsym $mod+Escape 		workspace prev
-bindsym $mod+Shift+Escape	exec --no-startup-id prompt "Exit i3?" "i3-msg exit"
 
-bindsym $mod+Shift+BackSpace	exec --no-start-up-id prompt "Reboot?" "$reboot"
+bindsym $mod+x			exec --no-startup-id i3lock-fancy -f Ubuntu-Mono	
+bindsym $mod+Shift+F1		exec --no-startup-id prompt "Suspend?" "systemctl suspend"
+bindsym $mod+Shift+F2		exec --no-startup-id prompt "Exit i3?" "i3-msg exit"
+bindsym $mod+Shift+F3		exec --no-startup-id prompt "Reboot?" "$reboot"
+bindsym $mod+Shift+F4		exec --no-startup-id prompt "Shutdown?" "$shutdown"
+
 
 bindsym $mod+Shift+q kill
 # dmenu with pywal color compatibility
@@ -161,9 +167,6 @@ bindsym $mod+Shift+d		exec --no-startuṕ-id	discord
 bindsym $mod+Shift+t		exec --no-startup-id	torbrowser-launcher
 
 # non application rellated
-
-bindsym $mod+x			exec --no-startup-id 	i3lock-fancy -f Ubuntu-Mono
-bindsym $mod+Shift+x 		exec --no-startup-id	prompt "Shutdown computer?" "$shutdown"
 
 bindsym $mod+b 			bar mode toggle
 bindsym $mod+a 			focus parent
