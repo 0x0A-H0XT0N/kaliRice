@@ -89,15 +89,17 @@ exec --no-startup-id 		redshift
 
 # Startup applications
 exec --no-startup-id discord
-exec --no-startup-id riot-web
+exec --no-startup-id riot-web --hidden
 exec --no-startup-id qbittorrent
 exec --no-startup-id stacer
 exec --no-startup-id spotify
+exec --no-startup-id todoist
 exec --no-startup-id flameshot
 exec --no-startup-id nixnote2 --startMinimized
 
 # Auto assign for applications and workspaces
 for_window	[class="Spotify"] 		move to workspace 5
+assign		[class="Todoist"]		$ws5
 assign 		[class="discord"]		$ws8
 assign		[class="Riot"]			$ws8
 assign 		[class="qBittorrent"]		$ws9
@@ -116,7 +118,7 @@ bindsym $mod+space	 	focus mode_toggle
 
 bindsym $mod+Escape 		workspace prev
 
-bindsym $mod+x			exec --no-startup-id i3lock-fancy -f Ubuntu-Mono	
+bindsym $mod+x			exec --no-startup-id i3lock-fancy -f Ubuntu-Mono
 bindsym $mod+Shift+F1		exec --no-startup-id prompt "Suspend?" "systemctl suspend"
 bindsym $mod+Shift+F2		exec --no-startup-id prompt "Exit i3?" "i3-msg exit"
 bindsym $mod+Shift+F3		exec --no-startup-id prompt "Reboot?" "$reboot"
@@ -134,33 +136,25 @@ bindsym $mod+d exec  "rofi -combi-modi window,drun -show combi -modi combi -show
 
 # Shortcuts for applications
 
-bindsy $mod+w	 		exec $term -e 		nmtui
 bindsym $mod+Shift+f		exec --no-startup-id 	$BROWSER
 
 bindsym $mod+ccedilla		exec $term -e 		/bin/lscript/l
 bindsym $mod+Control+l		exec $term -e 		/bin/lscript/l
+
 bindsym $mod+r	 		exec $term -e 		$FILE
 bindsym $mod+Shift+r		exec 			nautilus
 
 bindsym $mod+s			exec --no-startup-id 	spotify
 bindsym $mod+Shift+a		exec $term -e 		alsamixer
 
-bindsym Control+Shift+Escape	exec --no-startup-id	stacer
 bindsym Print	 		exec $term -e		flameshot gui
-
-bindsym $mod+p 			exec --no-startup-id	putty
-bindsym $mod+q			exec --no-startup-id	qbittorrent
 
 bindsym $mod+c			exec --no-startup-id 	charm
 bindsym $mod+v			exec --no-startup-id	virtualbox
 
-bindsym $mod+Shift+p		exec --no-startup-id	filezilla
-bindsym $mod+n			exec --no-startup-id	nixnote2
-
 bindsym $mod+m			exec $term -e	 	dmenumount
 bindsym $mod+Shift+m		exec $term -e 		dmenuumount
 
-bindsym $mod+Shift+n 		exec --no-startup-id	nano-wallet-desktop
 bindsym $mod+Shift+s 		exec --no-startup-id	steam
 
 bindsym $mod+Shift+d		exec --no-startuṕ-id	discord
