@@ -19,6 +19,9 @@ alias lsa="ls -lha"
 # ping alias
 alias google="ping -c4 8.8.8.8"
 
+# lscript alias
+alias l="sudo /bin/lscript/l"
+
 # handy for notebooks
 alias battery="upower -i $(upower -e | grep 'BAT') | grep -E 'percentage'"
 
@@ -46,8 +49,8 @@ alias warMachine='ssh -p2364 h0xt0n@192.168.0.2'
 alias content-archiver="python3 ~/code/projects/content-archiver/content-archiver.py"
 
 # youtube-dl
-alias yt="youtube-dl --add-metadata -i" # Download video link
-alias yta="yt -x -f bestaudio/best" # Download only audio
+alias yt="youtube-dl --restrict-filenames -o '%(title)s.%(ext)s' --merge-output-format mp4 -f 'best[ext=mp4]/best' --embed-thumbnail --add-metadata --xattrs --prefer-ffmpeg"
+alias yta="youtube-dl --restrict-filenames -o '%(title)s.%(ext)s' -f 'bestaudio[ext=mp3]/bestaudio' --embed-thumbnail --add-metadata --xattrs --prefer-ffmpeg"
 
 # jetbrains IDEs
 
