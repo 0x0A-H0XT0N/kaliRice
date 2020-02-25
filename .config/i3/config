@@ -55,7 +55,7 @@ client.background       $bg
 
 # bar config
 bar {
-        font pango:mono, 10
+        font pango:Ubuntu Mono, 12
 	colors {
                         background $darkblack
                         statusline $darkwhite
@@ -73,29 +73,23 @@ bar {
     }
 
 
-# Starting Scripts
-# hide the mouse after a while
-exec --no-startup-id 		unclutter
-# start notification deamon
-exec --no-startup-id 		dunst
-# restore pywal colorscheme
-exec --no-startup-id		wal -R -o "xcompmgr"
-# transparent terminal
-exec --no-startup-id		xcompmgr
-# noip2
-exec --no-startup-id 		noip2
-# redshift
-exec --no-startup-id 		redshift
-
-# Startup applications
-exec --no-startup-id discord
-exec --no-startup-id riot-web --hidden
-exec --no-startup-id qbittorrent
-exec --no-startup-id stacer
-exec --no-startup-id spotify
-exec --no-startup-id todoist
-exec --no-startup-id flameshot
-exec --no-startup-id nixnote2 --startMinimized
+# Starting applications
+exec --no-startup-id 	unclutter
+exec --no-startup-id 	dunst
+exec --no-startup-id	wal 			-R -o "xcompmgr"
+exec --no-startup-id	xcompmgr
+exec --no-startup-id 	noip2
+exec --no-startup-id 	redshift
+exec --no-startup-id 	discord
+exec --no-startup-id 	jetbrains-toolbox 	--minimize
+exec --no-startup-id 	riot-web 		--hidden
+exec --no-startup-id 	qbittorrent
+exec --no-startup-id 	stacer
+exec --no-startup-id 	spotify
+exec --no-startup-id 	todoist
+exec --no-startup-id 	flameshot
+exec --no-startup-id 	nixnote2 		--startMinimized
+exec --no-startup-id	xscreensaver 		-nosplash
 
 # Auto assign for applications and workspaces
 for_window	[class="Spotify"] 		move to workspace 5
@@ -106,6 +100,7 @@ assign 		[class="qBittorrent"]		$ws9
 assign 		[class="stacer"] 		$ws4
 assign 		[class="Steam"] 		$ws7
 for_window 	[title="Steam - News"] 		floating enable
+for_window	[class="Emoji-keyboard"]	floating enable
 for_window 	[title="Friends List"] 		floating enable
 for_window 	[title="PuTTY Configuration"]	floating enable
 
@@ -148,12 +143,13 @@ bindsym $mod+s			exec --no-startup-id 	spotify
 bindsym $mod+Shift+a		exec $term -e 		alsamixer
 
 bindsym Print	 		exec $term -e		flameshot gui
+bindsym $mod+m			exec --no-startup-id    com.github.phase1geo.minder
 
-bindsym $mod+c			exec --no-startup-id 	charm
+bindsym $mod+c			exec --no-startup-id 	pycharm
 bindsym $mod+v			exec --no-startup-id	virtualbox
 
-bindsym $mod+m			exec $term -e	 	dmenumount
-bindsym $mod+Shift+m		exec $term -e 		dmenuumount
+bindsym $mod+Shift+m		exec $term -e	 	dmenumount
+bindsym $mod+Control+m		exec $term -e 		dmenuumount
 
 bindsym $mod+Shift+s 		exec --no-startup-id	steam
 

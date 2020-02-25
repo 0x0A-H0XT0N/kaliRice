@@ -17,7 +17,7 @@ printf "\nUpdating apt\n"
 sudo apt-get update
 
 printf "\nInstalling programs\n"
-sudo apt-get install pm-utils sl nixnote2 riot-web audacious qbittorrent mpv flameshot stacer atomicparsley ffmpeg spotifycli tor torbrowser-launcher brave-browser filezilla htop i3 i3blocks libreoffice nautilus rofi alsa-utils alsa-tools ranger redshift unclutter dunst xcompmgr putty virtualbox ffmpegthumbnailer imagemagick ntpd
+sudo apt-get install pm-utils sl nixnote2 audacious qbittorrent mpv flameshot stacer atomicparsley ffmpeg spotifycli tor torbrowser-launcher filezilla htop i3 i3blocks libreoffice rofi alsa-utils alsa-tools ranger redshift unclutter dunst xcompmgr putty virtualbox ffmpegthumbnailer imagemagick ntpd soundconverter
 
 printf "\nInstalling python3 and pip3\n"
 sudo apt-get install python3 python3-pip

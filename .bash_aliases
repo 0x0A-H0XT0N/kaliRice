@@ -50,7 +50,7 @@ alias content-archiver="python3 ~/code/projects/content-archiver/content-archive
 
 # youtube-dl
 alias yt="youtube-dl --restrict-filenames -o '%(title)s.%(ext)s' --merge-output-format mp4 -f 'best[ext=mp4]/best' --embed-thumbnail --add-metadata --xattrs --prefer-ffmpeg"
-alias yta="youtube-dl --restrict-filenames -o '%(title)s.%(ext)s' -f 'bestaudio[ext=mp3]/bestaudio' --embed-thumbnail --add-metadata --xattrs --prefer-ffmpeg"
+alias yta="youtube-dl --restrict-filenames -o '%(title)s.%(ext)s' -f 'best' --prefer-ffmpeg --extract-audio --audio-format mp3 --embed-thumbnail --add-metadata"
 
 # jetbrains IDEs
 
