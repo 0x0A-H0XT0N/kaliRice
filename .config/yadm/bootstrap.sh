@@ -17,7 +17,7 @@ printf "\nUpdating apt\n"
 sudo apt-get update
 
 printf "\nInstalling programs\n"
-sudo apt-get install pm-utils sl nixnote2 audacious qbittorrent mpv flameshot stacer atomicparsley ffmpeg spotifycli tor torbrowser-launcher filezilla htop i3 i3blocks libreoffice rofi alsa-utils alsa-tools ranger redshift unclutter dunst xcompmgr putty virtualbox ffmpegthumbnailer imagemagick ntpd soundconverter
+sudo apt-get install i3lock-fancy pm-utils sl nixnote2 audacious qbittorrent mpv flameshot stacer atomicparsley ffmpeg spotifycli tor torbrowser-launcher filezilla htop i3 i3blocks libreoffice rofi alsa-utils alsa-tools ranger redshift unclutter dunst xcompmgr putty virtualbox ffmpegthumbnailer imagemagick ntpd soundconverter
 
 printf "\nCaching fonts in ~/.fonts\n"
 sudo fc-cache -f -v
@@ -26,7 +26,9 @@ printf "\nInstalling python3 and pip3\n"
 sudo apt-get install python3 python3-pip
 
 printf "\nInstalling youtube-dl, pywal\n"
-sudo pip3 install youtube-dl pywal pyown
+sudo pip3 install youtube-dl 
+sudo pip3 install pywal 
+sudo pip3 install pyown
 
 echo "Do you want to install Spotify? [Y/n]"
 read -r install_choice
