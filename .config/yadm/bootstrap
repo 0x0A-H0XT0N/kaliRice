@@ -152,6 +152,7 @@ class Install:
             "ntpstat": self.apt_package,
             "ntp": self.ntp,
             "detox": self.apt_package,
+            "xclip": self.apt_package,
 
             # programs to be installed with other methods (please comment method of installation)
             "jetbrains-toolbox": self.jetbrains_toolbox,
