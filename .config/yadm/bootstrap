@@ -151,6 +151,7 @@ class Install:
             "soundconverter": self.apt_package,
             "ntpstat": self.apt_package,
             "ntp": self.ntp,
+            "detox": self.apt_package,
 
             # programs to be installed with other methods (please comment method of installation)
             "jetbrains-toolbox": self.jetbrains_toolbox,
@@ -198,6 +199,9 @@ class Install:
                 self.install_dict[program]()
         print("Running a apt update...", end="")
         run_command("sudo apt-get update")
+        print(" Done.")
+        print("Running a updatedb...", end="")
+        run_command("sudo updatedb")
         print(" Done.")
         print("\nBootstrap finished. Exiting.")
         exit(0)
