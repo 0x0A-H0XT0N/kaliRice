@@ -5,6 +5,8 @@
 
 xset r rate 200 50
 
+wal -R
+
 # preventing the screen from going blank
 setterm --blank 0 --powersave off --powerdown 0
 xset s off

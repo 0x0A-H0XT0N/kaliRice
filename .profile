@@ -22,10 +22,12 @@ export PATH="$PATH:$(du "$HOME/.scripts/" | cut -f2 | tr '\n' ':')"
 export PATH="$PATH:/bin/lscript"
 export FILE="ranger"
 export BROWSER="firefox"
-export TERMINAL="st"
+export TERMINAL="guake"
 export EDITOR="vim"
 TZ='America/Fortaleza'; export TZ
 
+# remap caps lock to l-shift
+xmodmap -e "keycode 66 = Shift_L NoSymbol Shift_L" 
 
 # if running bash
 if [ -n "$BASH_VERSION" ]; then

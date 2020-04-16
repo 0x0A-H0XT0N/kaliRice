@@ -9,6 +9,14 @@
 #                                       
 #                                       
 
+export PATH="$PATH:$(du "$HOME/.scripts/" | cut -f2 | tr '\n' ':')"
+export PATH="$PATH:/bin/lscript"
+export FILE="ranger"
+export BROWSER="firefox"
+export TERMINAL="guake"
+export EDITOR="vim"
+TZ='America/Fortaleza'; export TZ
+
 
 #!/bin/bash
 # ls aliases
@@ -37,23 +45,6 @@ alias sd="sudo ranger"
 alias mkdir="mkdir -pv"
 alias sdn="sudo shutdown now"
 
-# dmenu integration with pywal
-alias dmen='dmenu_run -nb "$color0" -nf "$color15" -sb "$color1" -sf "$color15"'
-
-# ssh aliases
-alias war0fPr0xy='ssh -p2364 root@192.168.0.3'
-alias rpi='ssh -p2364 root@kalashnikov.sytes.net'
-alias warMachine='ssh -p2364 h0xt0n@192.168.0.2'
-
-# mgtow-archive
-alias content-archiver="python3 ~/code/projects/content-archiver/content-archiver.py"
-
 # youtube-dl
 alias yt="youtube-dl --restrict-filenames -o '%(title)s.%(ext)s' --merge-output-format mp4 -f 'best[ext=mp4]/best' --embed-thumbnail --add-metadata --xattrs --prefer-ffmpeg"
 alias yta="youtube-dl --restrict-filenames -o '%(title)s.%(ext)s' -f 'best' --prefer-ffmpeg --extract-audio --audio-format mp3 --embed-thumbnail --add-metadata"
-
-# jetbrains IDEs
-
-#alias charm="~/code/ide/pycharm-2019.1.3/bin/pycharm.sh"
-#alias webstorm="~/code/ide/WebStorm-191.7479.14/bin/webstorm.sh"
-
