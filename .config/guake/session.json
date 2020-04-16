@@ -1,0 +1,20 @@
+{
+    "schema_version": 2,
+    "timestamp": 1587018490,
+    "workspace": {
+        "0": [
+            [
+                {
+                    "panes": [
+                        {
+                            "type": "term",
+                            "directory": "/home/h0xt0n/.config/guake"
+                        }
+                    ],
+                    "label": "whatch",
+                    "custom_label_set": true
+                }
+            ]
+        ]
+    }
+}

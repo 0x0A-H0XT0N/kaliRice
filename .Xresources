@@ -19,3 +19,12 @@
 *.color15: #ebdbb2
 !! Set a default font and font size as below:
 !! *.font: Monospace-14;
+
+
+! rofi
+rofi.fake-transparency:	true
+rofi.lines:		10
+rofi.bw:		0
+rofi.opacity:		"20"
+rofi.hide-scrollbar:	true
+rofi.width:		50
