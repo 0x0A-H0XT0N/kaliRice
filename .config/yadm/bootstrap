@@ -1,9 +1,11 @@
 #!/usr/bin/env python3
 
+import os
 import subprocess
+import logging
 from sys import exit
-from os import geteuid, mkdir
-from os.path import expanduser, exists
+from time import perf_counter
+from colorama import Fore, init
 
 """
  ██ ▄█▀▄▄▄       ██▓     ██▓ ██▀███   ██▓ ▄████▄  ▓█████ 
@@ -17,95 +19,44 @@ from os.path import expanduser, exists
 ░  ░        ░  ░    ░  ░ ░     ░      ░  ░ ░         ░  ░
                                          ░               
 
-https://github.com/PhoenixK7PB/content-archiver
-kali bootstrap script for YADM.
-made for debian-based systems, but should work for any other APT/systemd based distro.
-dependencies are: apt, dpkg, a systemd-based system, wget
-what it does exactly?  
-    install these programs:
-        tor                                     # the onion router
-        jetbrains-toolbox                       # jetbrains applications for installing IDEs 
-        noip2                                   # DDNS service
-        lscript                                 # more info can be found at github.com/arismelachroinos/lscript
-        hiddeneye                               # more info can be found at github.com/DarkSecDevelopers/HiddenEye
-        blackeye                                # more info can be found at github.com/thelinuxchoice/blackeye
-        firefox-security-toolkit                # more info can be found at github.com/mazen160/Firefox-Security-Toolkit
-        firefox                                 # browser
-        todoist                                 # tasking app
-        spotify                                 # music app
-        flameshot                               # screenshot app (like shareX)
-        nixnote2                                # a evernote solution for linux
-        signal                                  # secure messenger app
-        riot                                    # decentralized messenger app
-        discord                                 # messenger app
-        steam                                   # video game distribution service
-        stacer                                  # "Linux System Optimizer and Monitoring"
-        virtualbox                              # virtualization host 
-        qbittorrent                             # torrent client
-        grub2themes                             # grub customizer
-        ranger                                  # terminal-based file manager
-        zulu*                                   # solution for file/hard-drive encryption
-        youtube-dl                              # video download for a ton of sites
-        pywal                                   # color-schemes generator
-        pyown                                   # dependence for pywal
-        unclutter                               # unclutter the mouse
-        redshift-gtk                            # color temperature adjustment
-        dunst                                   # notification deamon
-        xcompgmr                                # composition manager
-        pm-utils                                # power managment set
-        sl                                      # great tool for sys admins
-        audacious                               # music player
-        mpv                                     # video player
-        ffmpeg                                  # video manipulation tool
-        ffmpegthumbnailer                       # "plugin" for ffmpeg
-        filezilla                               # ftp client
-        htop                                    # process viewer
-        libreoffice                             # office suite
-        rofi                                    # dmenu replacement
-        ntpd                                    # NTP deamon program
-        pulseaudio                              # sound mixer
-        alsamixer                               # sound mixer
-        alsa-utils                              # utilities for alsa
-        alsa-tools                              # tools for alsa
-        atomicparsley                           # multi format manipulation for video/sound
-        imagemagick                             # image manipulation
-        soundconverter                          # audio format converter
-                                        
-    install these fonts:                        
-        ubuntu mono                             # very good mono font
-        jetBrains mono                          # another very good mono font
-        
-    clone these repos:
-        gitlab.com/h0xt0n/wallpapers            # my wallpapers <3
-        gitlab.com/h0xt0n/bellumInstrumentum    # my all-purpose scripts
-        gitlab.com/h0xt0n/content-archiver      # my project for archiving channels
-    
-    set up timezones and NTP (and install if necessary) using a Brazilian pool.
-        
-all of these tasks can be set by the user to be done or not.
+https://gitlab.com/h0xt0n/kaliRice
+This is a bootstrap script from YADM.
+Made for Kali Linux. No dependencies required on Kali 2020.1 and further.
+read README.txt for more information.
 """
-
-y = ["y", "yes", "s", "sim", "yeah", "yah", "ya"]  # affirmative choices, user input detection
-n = ["n", "no", "nao", "na", "nop", "nah"]  # negative choices, user input detection
 
 
 class Install:
     """
-    Contain every install instruction (apt, dpkg, wget, git clone, etc)
+    Holds install instructions
     """
 
     def __init__(self):
+        self.user_home = os.path.expanduser("~")
         self.tmp_dir = "/tmp/yadmBootstrap"
-        self.user_home = expanduser("~")
+        self.code_dir = "%s/code" % self.user_home
+        self.project_dir = "%s/projects" % self.code_dir
+        self.tools_dir = "%s/tools" % self.user_home
+
+        if not os.path.exists(self.tmp_dir):
+            os.mkdir(self.tmp_dir)
+        if not os.path.exists(self.code_dir):
+            os.mkdir(self.code_dir)
+        if not os.path.exists(self.tools_dir):
+            os.mkdir(self.tools_dir)
+        if not os.path.exists(self.project_dir):
+            os.mkdir(self.project_dir)
+        if not os.path.exists(self.tools_dir):
+            os.mkdir(self.tools_dir)
+
+        self.init_log()
+
         self.install_dict = {
             # this dict should contain every install instruction, following the example:
             # "procedure_name": procedure_function
             # where the value ("procedure_name") is a string, and the key (procedure_function) is a function obj
-            # "spotify": self.install_spotify
+            # e.g.: "spotify": self.install_spotify
             # the procedure_function (key) SHOULD NOT CONTAIN A () AT THE END!
-            # if the user will manually select the packages, the value/key pair should be removed as the user dictates
-            # if after the installation the program needs to be configured, make sure that the configuration takes place
-            # right after the installation/download
 
             # programs to be installed with apt-get install
             "tor": self.apt_package,
@@ -114,12 +65,7 @@ class Install:
             "firefox-esr": self.apt_package,
             "flameshot": self.apt_package,
             "nixnote2": self.apt_package,
-            "signal-desktop": self.apt_package,
-            "riot-web": self.apt_package,
-            "discord": self.apt_package,
             "stacer": self.apt_package,
-            "steam": self.apt_package,
-            "todoist": self.apt_package,
             "virtualbox": self.apt_package,
             "qbittorrent": self.apt_package,
             "grub-customizer": self.apt_package,
@@ -150,19 +96,29 @@ class Install:
             "imagemagick": self.apt_package,
             "soundconverter": self.apt_package,
             "ntpstat": self.apt_package,
-            "ntp": self.ntp,
             "detox": self.apt_package,
             "xclip": self.apt_package,
+            "minder": self.apt_package,
+            "neofetch": self.apt_package,
+            "gparted": self.apt_package,
+            "atril": self.apt_package,
 
-            # programs to be installed with other methods (please comment method of installation)
+            # programs to be installed with other methods
             "jetbrains-toolbox": self.jetbrains_toolbox,
             "noip2": self.noip2,
             "spotify": self.spotify,
             "youtube-dl": self.youtube_dl,
             "pyown": self.pyown,
             "pywal": self.pywal,
-
-
+            "protonvpn": self.protonvpn,
+            "brave": self.brave,
+            "signal": self.signal,
+            "riot": self.riot,
+            "discord": self.discord,
+            "steam": self.steam,
+            "todoist": self.todoist,
+            "ntp": self.ntp,
+            "etcher": self.etcher,
 
             # repos to be cloned
             "gitlab.com/h0xt0n/wallpapers": self.wallpapers,
@@ -178,53 +134,110 @@ class Install:
             "jetbrains-mono": self.jetbrains_mono,
         }
 
+    def init_log(self):
+        """
+        Initializes the log file
+        :return: None
+        """
+        logging.basicConfig(
+            filename="%s/log.txt" % self.tmp_dir,
+            level=logging.WARNING,
+            filemode="w",
+            format="%(asctime)s : %(funcName)s : %(levelname)s : %(message)s"
+        )
+
     def installer(self):
         """
         Handles all calls from self.install_dict
         :return: None
         """
-        run_command("clear")
+        print("All these programs will be installed: ")
+        for program in self.install_dict:
+            print(program, end=" ")
+        choice = str(input("\nA total of %d programs/tools/libs/fonts/scripts will be installed. Continue? [Y/n]"
+                           % len(self.install_dict)))
+        if choice.lower() == "n":
+            exit(0)
         count = 0
         dict_len = len(self.install_dict)
-        print("Beginning installation... This may take a very long while. DO NOT QUIT WHILE IN PROGRESS!!!")
+        print("Beginning installation... This may take a very long while. DO NOT QUIT WHILE IN PROGRESS!")
+        print("Saving logs at: %s/log.txt" % self.tmp_dir)
         print("Running a apt update...", end="")
         run_command("sudo apt-get update")
-        print(" Done.")
+        print(Fore.GREEN + " Done.")
         print()
+        t = perf_counter()
         for program in self.install_dict:
             count += 1
-            print("%d of %d: " % (count, dict_len), end="")
+            vcount = count
+            if len(str(count)) < 2:
+                count = str("0" + str(count))
+            print("%s of %s: " % (str(count), str(dict_len)), end="")
             if self.install_dict[program] == self.apt_package:
                 self.apt_package(program)
             else:
                 self.install_dict[program]()
-        print("Running a apt update...", end="")
-        run_command("sudo apt-get update")
-        print(" Done.")
-        print("Running a updatedb...", end="")
-        run_command("sudo updatedb")
-        print(" Done.")
-        print("\nBootstrap finished. Exiting.")
+            count = vcount
+        self.post_install()
+        print(Fore.GREEN + '\033[1m' + "Bootstrap finished. Took %d seconds.\n" % int(perf_counter() - t) + '\033[0m')
+        print("Remember to run:")
+        print("1. run a full update: 'sudo apt update && sudo apt upgrade -y && sudo apt dist-upgrade -y && sudo apt "
+              "full-upgrade -y && sudo apt autoremove -y && sudo apt update'")
+        print("2. configure timezones: 'sudo tzselect'")
+        print("3. edit sudoers by typing 'sudo visudo' and pasting '%s  ALL=(ALL) NOPASSWD:ALL' at the last line"
+              % os.getlogin())
+        print("And then rebooting.")
+        print("The following programs/scripts/tools may need to be configured:")
+        print("firefox-esr, nixnote, redshitft-gtk, jetbrains-toolbox, noip2, spotify, protonvpn, brave, signal, riot, "
+              "discord, steam, todoist, lscript, hiddeneye, blackeye, firefox-security-toolbox.")
         exit(0)
 
-    def selector(self):
+    def post_install(self):
         """
-        Handler for the user to select each package and install procedure
-        :return: None. Calls self.installer()
+        Holds post-install instructions
+        :return: None
         """
-        run_command("clear")
-        count = 0
-        dict_len = len(self.install_dict)
-        remove_list = list()
-        for program in self.install_dict:
-            count += 1
-            print("%d of %d: " % (count, dict_len), end="")
-            install_choice = str(input("Do you want to install %s? [Y/n]" % program))
-            if install_choice in n:
-                remove_list.append(program)
-        for item in remove_list:
-            self.install_dict.pop(item)
-        self.installer()
+
+        try:    # remove self.tmp_dir
+            print("Removing temporary directory at %s..." % self.tmp_dir, end="")
+            run_command("sudo rf -r %s" % self.tmp_dir)
+            print(Fore.GREEN + " Done.")
+        except Exception as e:
+            print(Fore.RED + " Failed.")
+            logging.error(e)
+
+        try:    # run apt update
+            print("Running a apt update...", end="")
+            run_command("sudo apt-get update")
+            print(Fore.GREEN + " Done.")
+        except Exception as e:
+            print(Fore.RED + " Failed.")
+            logging.error(e)
+
+        try:    # run updatedb
+            print("Running a updatedb...", end="")
+            run_command("sudo updatedb")
+            print(Fore.GREEN + " Done.")
+        except Exception as e:
+            print(Fore.RED + " Failed.")
+            logging.error(e)
+
+        try:    # fix permissions at ~/
+            print("Fixing permissions at ~/...", end="")
+            run_command("sudo chown %s:%s ~/ --recursive" % (os.getlogin(), os.getlogin()))
+            run_command("sudo chmod 750 ~/ --recursive")
+            print(Fore.GREEN + " Done.")
+        except Exception as e:
+            print(Fore.RED + " Failed.")
+            logging.error(e)
+
+        try:    # add user to sudo group
+            print("Adding user '%s' to sudo group..." % os.getlogin(), end="")
+            run_command("sudo adduser %s sudo" % os.getlogin())
+            print(Fore.GREEN + " Done.")
+        except Exception as e:
+            print(Fore.RED + " Failed.")
+            logging.error(e)
 
     @staticmethod
     def install_apt_package(package):
@@ -240,6 +253,7 @@ class Install:
         if result.returncode == 0:
             return True
         else:
+            logging.error("returned code value was '%d', stderr='%s'" % (result.returncode, result.stderr))
             return False
 
     def apt_package(self, package):
@@ -252,9 +266,9 @@ class Install:
             raise TypeError("'package' argument is not a string.")
         print("Downloading and installing %s..." % package, end="")
         if self.install_apt_package(package):
-            print(" Done.")
+            print(Fore.GREEN + " Done.")
         else:
-            print(" Failed.")
+            print(Fore.RED + " Failed.")
 
     def ntp(self):
         print("Downloading and configuring ntp...", end="")
@@ -271,25 +285,26 @@ class Install:
                         '\nserver 3.pool.ntp.org" | sudo tee -a /etc/ntp.conf')
             run_command("sudo systemctl start ntp")
             run_command("sudo systemctl enable ntp")
-            print(" Done.")
+            print(Fore.GREEN + " Done.")
         except Exception as e:
-            print(" Failed.")
+            logging.error(e)
+            print(Fore.RED + " Failed.")
 
     def jetbrains_toolbox(self):
         version = "1.16.6319"
         print("Downloading and installing jetbrains toolbox...", end="")
         try:
-            if not exists(self.tmp_dir):
-                mkdir(self.tmp_dir)
+
             run_command("sudo wget -O %s/jetbrains-toolbox.tar.gz "
                         "https://download.jetbrains.com/toolbox/jetbrains-toolbox-1.16.6319.tar.gz"
                         % self.tmp_dir)
             run_command("sudo tar -xf %s/jetbrains-toolbox.tar.gz -C %s" % (self.tmp_dir, self.tmp_dir))
             run_command("sudo chmod +x %s/jetbrains-toolbox-%s/jetbrains-toolbox" % (self.tmp_dir, version))
             run_command("sudo cp %s/jetbrains-toolbox-%s/jetbrains-toolbox /usr/local/bin" % (self.tmp_dir, version))
-            print(" Done.")
+            print(Fore.GREEN + " Done.")
         except Exception as e:
-            print(" Failed.")
+            logging.error(e)
+            print(Fore.RED + " Failed.")
 
     def noip2(self):
         print("Downloading and installing noip2...", end="")
@@ -302,10 +317,11 @@ class Install:
             run_command("sudo make")
             run_command("sudo make install")
             run_command("cd %s" % pwd_result)
-            print(" Done.")
+            print(Fore.GREEN + " Done.")
             print("To later configure noip2 client, use 'sudo noip2 -C'")
         except Exception as e:
-            print(" Failed.")
+            logging.error(e)
+            print(Fore.RED + " Failed.")
 
     def spotify(self):
         print("Downloading and installing spotify...", end="")
@@ -314,27 +330,30 @@ class Install:
             run_command('echo "deb http://repository.spotify.com stable non-free" '
                         '| sudo tee /etc/apt/sources.list.d/spotify.list')
             run_command("sudo apt-get update && sudo apt-get install -y spotify-client")
-            print(" Done.")
+            print(Fore.GREEN + " Done.")
         except Exception as e:
-            print(" Failed.")
+            logging.error(e)
+            print(Fore.RED + " Failed.")
 
     def youtube_dl(self):
         print("Downloading and installing youtube-dl...", end="")
         try:
             self.install_apt_package("python3-pip")
             run_command("sudo pip3 install youtube-dl")
-            print(" Done.")
+            print(Fore.GREEN + " Done.")
         except Exception as e:
-            print(" Failed.")
+            logging.error(e)
+            print(Fore.RED + " Failed.")
 
     def pyown(self):
         print("Downloading and installing pwown...", end="")
         try:
             self.install_apt_package("python3-pip")
             run_command("sudo pip3 install pwown")
-            print(" Done.")
+            print(Fore.GREEN + " Done.")
         except Exception as e:
-            print(" Failed.")
+            logging.error(e)
+            print(Fore.RED + " Failed.")
 
     def pywal(self):
         print("Downloading and installing pywal...", end="")
@@ -342,93 +361,204 @@ class Install:
             self.install_apt_package("python3-pip")
             self.install_apt_package("imagemagick")
             run_command("sudo pip3 install pywal")
-            print(" Done.")
+            print(Fore.GREEN + " Done.")
         except Exception as e:
-            print(" Failed.")
+            logging.error(e)
+            print(Fore.RED + " Failed.")
+
+    def protonvpn(self):
+        print("Downloading and installing protonvpn...", end="")
+        try:
+            self.install_apt_package("openvpn")
+            self.install_apt_package("dialog")
+            self.install_apt_package("python3-pip")
+            self.install_apt_package("python3-setuptools")
+            run_command("sudo pip3 install protonvpn-cli")
+            print(Fore.GREEN + " Done.")
+        except Exception as e:
+            logging.error(e)
+            print(Fore.RED + " Failed.")
+
+    def brave(self):
+        print("Downloading and installing brave...", end="")
+        try:
+            self.install_apt_package("apt-transport-https")
+            self.install_apt_package("curl")
+            run_command("curl -s https://brave-browser-apt-release.s3.brave.com/brave-core.asc | "
+                        "sudo apt-key --keyring /etc/apt/trusted.gpg.d/brave-browser-release.gpg add -")
+            run_command('echo "deb [arch=amd64] https://brave-browser-apt-release.s3.brave.com/ stable main" | '
+                        'sudo tee /etc/apt/sources.list.d/brave-browser-release.list')
+            run_command("sudo apt update")
+            self.install_apt_package("brave-browser")
+            print(Fore.GREEN + " Done.")
+        except Exception as e:
+            logging.error(e)
+            print(Fore.RED + " Failed.")
+
+    def signal(self):
+        print("Downloading and installing signal...", end="")
+        try:
+            run_command("curl -s https://updates.signal.org/desktop/apt/keys.asc | sudo apt-key add -")
+            run_command('echo "deb [arch=amd64] https://updates.signal.org/desktop/apt xenial main" | '
+                        'sudo tee -a /etc/apt/sources.list.d/signal-xenial.list')
+            run_command("sudo apt update")
+            self.install_apt_package("signal-desktop")
+            print(Fore.GREEN + " Done.")
+        except Exception as e:
+            logging.error(e)
+            print(Fore.RED + " Failed.")
+
+    def riot(self):
+        print("Downloading and installing riot...", end="")
+        try:
+            self.install_apt_package("wget")
+            self.install_apt_package("apt-transport-https")
+            run_command("sudo wget -O /usr/share/keyrings/riot-im-archive-keyring.gpg "
+                        "https://packages.riot.im/debian/riot-im-archive-keyring.gpg")
+            run_command('echo "deb [signed-by=/usr/share/keyrings/riot-im-archive-keyring.gpg] '
+                        'https://packages.riot.im/debian/ default main" | '
+                        'sudo tee /etc/apt/sources.list.d/riot-im.list')
+            run_command("sudo apt update")
+            self.install_apt_package("riot-desktop")
+            print(Fore.GREEN + " Done.")
+        except Exception as e:
+            logging.error(e)
+            print(Fore.RED + " Failed.")
+
+    def discord(self):
+        print("Downloading and installing discord...", end="")
+        try:
+
+            run_command("sudo wget -O %s/discord.deb "
+                        "https://discord.com/api/download?platform=linux&format=deb"
+                        % self.tmp_dir)
+            run_command("sudo dpkg -i %s/discord.deb" % self.tmp_dir)
+            run_command("sudo apt install -f")
+            run_command("sudo dpkg -i %s/discord.deb" % self.tmp_dir)
+            print(Fore.GREEN + " Done.")
+        except Exception as e:
+            logging.error(e)
+            print(Fore.RED + " Failed.")
+
+    def steam(self):
+        print("Downloading and installing steam...", end="")
+        try:
+            run_command("sudo wget -O %s/steam.deb "
+                        "https://steamcdn-a.akamaihd.net/client/installer/steam.deb"
+                        % self.tmp_dir)
+            run_command("sudo dpkg -i %s/steam.deb" % self.tmp_dir)
+            run_command("sudo apt install -f")
+            run_command("sudo dpkg -i %s/steam.deb" % self.tmp_dir)
+            print(Fore.GREEN + " Done.")
+        except Exception as e:
+            logging.error(e)
+            print(Fore.RED + " Failed.")
+
+    def todoist(self):
+        print("Downloading and installing todoist...", end="")
+        try:
+            run_command("sudo wget -O %s/todoist.deb "
+                        "https://github.com/KryDos/todoist-linux/releases/download/1.21/Todoist_1.21.0_amd64.deb"
+                        % self.tmp_dir)
+            run_command("sudo dpkg -i %s/todoist.deb" % self.tmp_dir)
+            run_command("sudo apt install -f")
+            run_command("sudo dpkg -i %s/todoist.deb" % self.tmp_dir)
+            print(Fore.GREEN + " Done.")
+        except Exception as e:
+            logging.error(e)
+            print(Fore.RED + " Failed.")
+
+    def etcher(self):
+        print("Downloading and installing etcher...", end="")
+        try:
+            run_command('echo "deb https://deb.etcher.io stable etcher" | '
+                        'sudo tee /etc/apt/sources.list.d/balena-etcher.list')
+            run_command('sudo apt-key adv --keyserver hkps://keyserver.ubuntu.com:443 --recv-keys 379CE192D401AB61')
+            run_command("sudo apt update")
+            run_command("sudo apt-get install balena-etcher-electron")
+            print(Fore.GREEN + " Done.")
+        except Exception as e:
+            logging.error(e)
+            print(Fore.RED + " Failed.")
 
     def wallpapers(self):
         print("Downloading wallpapers to ~/Pictures/wallpapers...", end="")
         try:
-            if not exists(self.user_home + "/Pictures/wallpapers"):
-                mkdir(self.user_home + "/Pictures/wallpapers")
+            if not os.path.exists(self.user_home + "/Pictures/wallpapers"):
+                os.mkdir(self.user_home + "/Pictures/wallpapers")
             run_command("sudo git clone https://gitlab.com/h0xt0n/wallpapers.git ~/Pictures/wallpapers")
-            print(" Done.")
+            print(Fore.GREEN + " Done.")
         except Exception as e:
-            print(" Failed.")
+            logging.error(e)
+            print(Fore.RED + " Failed.")
 
     def bellumInstrumentum(self):
         print("Downloading bellumInstrumentum to ~/tools/bellumInstrumentum...", end="")
         try:
-            if not exists(self.user_home + "/tools"):
-                mkdir(self.user_home + "/tools")
             run_command("sudo git clone https://gitlab.com/h0xt0n/bellumInstrumentum.git ~/tools/bellumInstrumentum")
-            print(" Done.")
+            print(Fore.GREEN + " Done.")
         except Exception as e:
-            print(" Failed.")
+            logging.error(e)
+            print(Fore.RED + " Failed.")
 
     def content_archiver(self):
         print("Downloading content-archiver to ~/tools/content-archiver...", end="")
         try:
-            if not exists(self.user_home + "/tools"):
-                mkdir(self.user_home + "/tools")
             run_command("sudo git clone https://gitlab.com/h0xt0n/content-archiver.git ~/tools/content-archiver")
-            print(" Done.")
+            print(Fore.GREEN + " Done.")
         except Exception as e:
-            print(" Failed.")
+            logging.error(e)
+            print(Fore.RED + " Failed.")
 
     def lscript(self):
         print("Downloading and installing lscript...", end="")
         try:
             pwd_result = subprocess.run("pwd", shell=True, capture_output=True, text=True).stdout
-            if not exists(self.user_home + "/tools"):
-                mkdir(self.user_home + "/tools")
             run_command("sudo git clone https://github.com/arismelachroinos/lscript.git ~/tools/lscript")
             run_command("sudo chmod +x ~/tools/lscript/install.sh")
             run_command("cd ~/tools/lscript")
             run_command("./install.sh")
             run_command("cd %s" % pwd_result)
-            print(" Done.")
+            print(Fore.GREEN + " Done.")
         except Exception as e:
-            print(" Failed.")
+            logging.error(e)
+            print(Fore.RED + " Failed.")
 
     def hiddeneye(self):
         print("Downloading and installing hiddeneye...", end="")
         try:
-            if not exists(self.user_home + "/tools"):
-                mkdir(self.user_home + "/tools")
             run_command("sudo git clone https://github.com/DarkSecDevelopers/HiddenEye.git ~/tools/HiddenEye")
             self.install_apt_package("python3-pip")
             run_command("sudo chmod 750 --recursive ~/tools/HiddenEye")
             run_command("sudo pip3 install -r ~/tools/HiddenEye/requirements.txt")
             run_command("sudo pip3 install requests")
-            print(" Done.")
+            print(Fore.GREEN + " Done.")
         except Exception as e:
-            print(" Failed.")
+            logging.error(e)
+            print(Fore.RED + " Failed.")
 
     def blackeye(self):
         print("Downloading and installing blackeye...", end="")
         try:
-            if not exists(self.user_home + "/tools"):
-                mkdir(self.user_home + "/tools")
             run_command("sudo git clone https://github.com/thelinuxchoice/blackeye ~/tools/blackeye")
             run_command("sudo chmod 750 --recursive ~/tools/blackeye")
             run_command("sudo chmod +x ~/tools/blackeye/blackeye.sh")
-            print(" Done.")
+            print(Fore.GREEN + " Done.")
         except Exception as e:
-            print(" Failed.")
+            logging.error(e)
+            print(Fore.RED + " Failed.")
 
     def firefox_security_toolkit(self):
         print("Downloading firefox-security-toolkit to ~/tools/firefox-security-toolkit...", end="")
         try:
-            if not exists(self.user_home + "/tools"):
-                mkdir(self.user_home + "/tools")
             run_command("sudo git clone https://github.com/mazen160/Firefox-Security-Toolkit.git "
                         "~/tools/Firefox-Security-Toolkit")
             run_command("sudo chmod 750 --recursive ~/tools/Firefox-Security-Toolkit")
             run_command("sudo chmod +x ~/tools/Firefox-Security-Toolkit/firefox_security_toolkit.sh")
-            print(" Done.")
+            print(Fore.GREEN + " Done.")
         except Exception as e:
-            print(" Failed.")
+            logging.error(e)
+            print(Fore.RED + " Failed.")
 
     def ubuntu_mono(self):
         print("Downloading and installing ubuntu mono font...", end="")
@@ -438,16 +568,15 @@ class Install:
             self.install_apt_package("ttf-ubuntu-font-family")
             self.install_apt_package("fontconfig")
             run_command("sudo fc-cache -f -v")
-            print(" Done.")
+            print(Fore.GREEN + " Done.")
         except Exception as e:
-            print(" Failed.")
+            logging.error(e)
+            print(Fore.RED + " Failed.")
 
     def jetbrains_mono(self):
         version = "1.0.3"
         print("Downloading and installing jetbrains mono font...", end="")
         try:
-            if not exists(self.tmp_dir):
-                mkdir(self.tmp_dir)
             run_command("sudo wget -O %s/jetbrains-mono.zip "
                         "https://download.jetbrains.com/fonts/JetBrainsMono-1.0.3.zip"
                         % self.tmp_dir)
@@ -455,9 +584,10 @@ class Install:
             run_command("sudo cp %s/JetBrainsMono-%s/ttf/* /usr/local/share/fonts/" % (self.tmp_dir, version))
             self.install_apt_package("fontconfig")
             run_command("sudo fc-cache -f -v")
-            print(" Done.")
+            print(Fore.GREEN + " Done.")
         except Exception as e:
-            print(" Failed.")
+            logging.error(e)
+            print(Fore.RED + " Failed.")
 
 
 def run_command(command):
@@ -481,7 +611,7 @@ def ask_for_sudo():
     Try to sudo -v
     :return: True if successful, False if failed.
     """
-    if geteuid() != 0:
+    if os.geteuid() != 0:
         sudo = subprocess.run("sudo -v", shell=True, capture_output=True, text=True)
         if sudo.returncode == 0:
             return True
@@ -498,16 +628,15 @@ def check_sudo():
     :return: If the authentication is successful or the user has privilege, prints a dialogue and return nothing.
     If the authentication fails, exit the program with return code 1 and a message to run as sudo.
     """
-    print("Checking for privileges...", end="")
-    if geteuid() == 0:
-        print(" User have privilege.")
+    print("Trying to authenticate...")
+    if os.geteuid() == 0:
+        print(Fore.GREEN + "Authenticated.\n")
     else:
-        print(" User does not have privilege... Trying to authenticate... ")
         if not ask_for_sudo():
-            print("Authentication failed. Try again with sudo privilege.")
+            print(Fore.RED + "Authentication failed.\n")
             exit(1)
         else:
-            print("Authenticated.\n")
+            print(Fore.GREEN + "Authenticated.\n")
 
 
 def check_command(command):
@@ -527,67 +656,9 @@ def check_command(command):
         return True
 
 
-def check_dependencies():
-    """
-    Check for all dependencies, if any new dependency is added, add it to this function
-    :return: exit if there is a error in any dependency, if it's successful, nothing is returned
-    """
-    print("Checking dependencies...")
 
-    print("Looking for dpkg installation...", end="")
-    if check_command("dpkg"):
-        print(" Found.")
-    else:
-        print("DPKG does not exist. Bootstrap is not compatible with your system.")
-        exit(1)
-
-    print("Looking for apt-get installation...", end="")
-    if check_command("apt-get"):
-        print(" Found.")
-    else:
-        print("apt-get does not exist. Bootstrap is not compatible with your system.")
-        exit(1)
-
-    print("Looking for systemctl installation...", end="")
-    if check_command("systemctl"):
-        print(" Found.")
-    else:
-        print("systemctl does not exist. Bootstrap is not compatible with your system.")
-        exit(1)
-
-    print("Looking for wget installation...", end="")
-    if check_command("wget"):
-        print(" Found.")
-    else:
-        print(" Not found. Installing it...", end="")
-        if Install.install_apt_package("wget"):
-            print(" Done.")
-        else:
-            print(" Installation Failed. Try to install wget manually. Exiting.")
-            exit(1)
-
-    print("All dependencies found.")
-
-
+init(autoreset=True)
 install = Install()
 check_sudo()
-check_dependencies()
 
-while True:  # installation mode dialogue
-    try:  # if a new mode is added, put it in the input str bellow with its number and message
-        install_all_choice = int(input("\nPress 1 to install ALL packages."
-                                       "\nPress 2 to select each package manually."
-                                       "\n>:"))
-    except ValueError:
-        print("\nOption not found. Try again.\n")
-        continue
-    if install_all_choice not in (1, 2):  # if a new mode is added, put its number in the tuple
-        print("\nOption not found. Try again.\n")
-        continue
-    else:
-        break
-
-if install_all_choice == 1:  # if a new mode is added, put a elif with its number and instructions in here
-    install.installer()
-elif install_all_choice == 2:
-    install.selector()
+install.installer()
