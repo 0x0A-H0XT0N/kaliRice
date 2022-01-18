@@ -25,6 +25,15 @@ Made for Kali Linux. No dependencies required on Kali 2020.1 and further.
 read README.txt for more information.
 """
 
+# The following programs need to be readded to "install_dict" and their respective functions need to be updated (check the graveyard at the end of the file):
+# noip2
+# protonvpn
+# signal
+# discord
+# steam
+# todoist
+# riot (AKA element, a matrix client)
+
 
 class Install:
     """
@@ -35,19 +44,11 @@ class Install:
         self.user_home = os.path.expanduser("~")
         self.tmp_dir = "/tmp/yadmBootstrap"
         self.code_dir = "%s/code" % self.user_home
-        self.project_dir = "%s/projects" % self.code_dir
-        self.tools_dir = "%s/tools" % self.user_home
 
         if not os.path.exists(self.tmp_dir):
             os.mkdir(self.tmp_dir)
         if not os.path.exists(self.code_dir):
             os.mkdir(self.code_dir)
-        if not os.path.exists(self.tools_dir):
-            os.mkdir(self.tools_dir)
-        if not os.path.exists(self.project_dir):
-            os.mkdir(self.project_dir)
-        if not os.path.exists(self.tools_dir):
-            os.mkdir(self.tools_dir)
 
         self.init_log()
 
@@ -56,74 +57,75 @@ class Install:
             # "procedure_name": procedure_function
             # where the value ("procedure_name") is a string, and the key (procedure_function) is a function obj
             # e.g.: "spotify": self.install_spotify
-            # the procedure_function (key) SHOULD NOT CONTAIN A () AT THE END!
+            # the procedure_function (key) SHOULD NOT CONTAIN "()" AT THE END!
 
             # programs to be installed with apt-get install
+            # comments are handy for identifcation 
+            
+            "firefox-esr": self.apt_package,
+            "libreoffice": self.apt_package,
+            "virtualbox": self.apt_package,
+            "qbittorrent": self.apt_package,
+
+            # tor stuff
             "tor": self.apt_package,
             "torsocks": self.apt_package,
             "torbrowser-launcher": self.apt_package,
-            "firefox-esr": self.apt_package,
-            "flameshot": self.apt_package,
-            "nixnote2": self.apt_package,
-            "stacer": self.apt_package,
-            "virtualbox": self.apt_package,
-            "qbittorrent": self.apt_package,
-            "grub-customizer": self.apt_package,
-            "ranger": self.apt_package,
+            
+            # zulu crypt stuff
             "zulucrypt-cli": self.apt_package,
             "zulucrypt-gui": self.apt_package,
             "zulumount-cli": self.apt_package,
             "zulumount-gui": self.apt_package,
             "zulupolkit": self.apt_package,
             "zulusafe-cli": self.apt_package,
-            "unclutter": self.apt_package,
-            "redshift-gtk": self.apt_package,
-            "dunst": self.apt_package,
-            "xcompmgr": self.apt_package,
-            "pm-utils": self.apt_package,
-            "sl": self.apt_package,
-            "audacious": self.apt_package,
-            "mpv": self.apt_package,
-            "ffmpeg": self.apt_package,
+
+            # youtube-dl stuff
+            "ffmpeg": self.apt_package,             
             "ffmpegthumbnailer": self.apt_package,
-            "filezilla": self.apt_package,
-            "htop": self.apt_package,
-            "libreoffice": self.apt_package,
-            "rofi": self.apt_package,
-            "pulseaudio": self.apt_package,
-            "alsamixergui": self.apt_package,
-            "atomicparsley": self.apt_package,
-            "imagemagick": self.apt_package,
-            "soundconverter": self.apt_package,
-            "ntpstat": self.apt_package,
-            "detox": self.apt_package,
-            "xclip": self.apt_package,
-            "minder": self.apt_package,
-            "neofetch": self.apt_package,
-            "gparted": self.apt_package,
-            "atril": self.apt_package,
+            "atomicparsley": self.apt_package,      
+            "imagemagick": self.apt_package,        
+
+            # audio stuff
+            "pulseaudio": self.apt_package,             # audio driver
+            "alsamixergui": self.apt_package,           # audio driver
+            "audacious": self.apt_package,              # music player
+            "audacity": self.apt_package,               # music editor
+            "soundconverter": self.apt_package,         # handy converter
+
+            "guake": self.apt_package,                  # drop down terminal
+            "flameshot": self.apt_package,              # scrrenshot program, like sharex
+            "stacer": self.apt_package,                 # resource monitor
+            "grub-customizer": self.apt_package,        # modify/customize grub
+            "ranger": self.apt_package,                 # cli explorer
+            "unclutter": self.apt_package,              # hides cursor after a while idle
+            "redshift-gtk": self.apt_package,           # changes monitor temperature
+            "mpv": self.apt_package,                    # video player
+            "filezilla": self.apt_package,              # ftp/sftp client
+            "htop": self.apt_package,                   # resource monitor
+            "rofi": self.apt_package,                   # app launcher
+            "ntpstat": self.apt_package,                # for ntp (network time protocol) stuff
+            "detox": self.apt_package,                  # removes annoying stuff from filenames
+            "xclip": self.apt_package,                  # for the "copy" alias
+            "minder": self.apt_package,                 # mind-mapping program
+            "neofetch": self.apt_package,               # better than screenfetch
+            "gparted": self.apt_package,                # partition handler
+            "atril": self.apt_package,                  # pdf/epub reader
+            "apt-transport-https": self.apt_package,    # lib
 
             # programs to be installed with other methods
-            "jetbrains-toolbox": self.jetbrains_toolbox,
-            "noip2": self.noip2,
             "spotify": self.spotify,
+            "vscode": self.vscode,
+            "github-desktop": self.github_desktop,
+            "etcher": self.etcher,
             "youtube-dl": self.youtube_dl,
             "pyown": self.pyown,
             "pywal": self.pywal,
-            "protonvpn": self.protonvpn,
-            "brave": self.brave,
-            "signal": self.signal,
-            "riot": self.riot,
-            "discord": self.discord,
-            "steam": self.steam,
-            "todoist": self.todoist,
             "ntp": self.ntp,
-            "etcher": self.etcher,
 
             # repos to be cloned
             "gitlab.com/h0xt0n/wallpapers": self.wallpapers,
             "gitlab.com/h0xt0n/bellumInstrumentum": self.bellumInstrumentum,
-            "gitlab.com/h0xt0n/content-archiver": self.content_archiver,
             "lscript": self.lscript,
             "hiddeneye": self.hiddeneye,
             "blackeye": self.blackeye,
@@ -154,7 +156,7 @@ class Install:
         print("All these programs will be installed: ")
         for program in self.install_dict:
             print(program, end=" ")
-        choice = str(input("\nA total of %d programs/tools/libs/fonts/scripts will be installed. Continue? [Y/n]"
+        choice = str(input("\nTotal of %d operations. Continue? [Y/n]"
                            % len(self.install_dict)))
         if choice.lower() == "n":
             exit(0)
@@ -187,8 +189,8 @@ class Install:
         print("3. edit sudoers by typing 'sudo visudo' and pasting '%s  ALL=(ALL) NOPASSWD:ALL' at the last line"
               % os.getlogin())
         print("And then rebooting.")
-        print("The following programs/scripts/tools may need to be configured:")
-        print("firefox-esr, nixnote, redshitft-gtk, jetbrains-toolbox, noip2, spotify, protonvpn, brave, signal, riot, "
+        print("The following programs may need to be configured:")
+        print("firefox-esr, redshitft-gtk, vscode, noip2, spotify, protonvpn, signal, riot, "
               "discord, steam, todoist, lscript, hiddeneye, blackeye, firefox-security-toolbox.")
         exit(0)
 
@@ -290,46 +292,48 @@ class Install:
             logging.error(e)
             print(Fore.RED + " Failed.")
 
-    def jetbrains_toolbox(self):
-        version = "1.16.6319"
-        print("Downloading and installing jetbrains toolbox...", end="")
-        try:
-
-            run_command("sudo wget -O %s/jetbrains-toolbox.tar.gz "
-                        "https://download.jetbrains.com/toolbox/jetbrains-toolbox-1.16.6319.tar.gz"
-                        % self.tmp_dir)
-            run_command("sudo tar -xf %s/jetbrains-toolbox.tar.gz -C %s" % (self.tmp_dir, self.tmp_dir))
-            run_command("sudo chmod +x %s/jetbrains-toolbox-%s/jetbrains-toolbox" % (self.tmp_dir, version))
-            run_command("sudo cp %s/jetbrains-toolbox-%s/jetbrains-toolbox /usr/local/bin" % (self.tmp_dir, version))
-            print(Fore.GREEN + " Done.")
-        except Exception as e:
-            logging.error(e)
-            print(Fore.RED + " Failed.")
-
-    def noip2(self):
-        print("Downloading and installing noip2...", end="")
-        try:
-            pwd_result = subprocess.run("pwd", shell=True, capture_output=True, text=True).stdout
-            run_command("sudo wget -O /usr/local/src/noip-duc-linux.tar.gz"
-                        "http://www.no-ip.com/client/linux/noip-duc-linux.tar.gz")
-            run_command("sudo tar xf /usr/local/src/noip-duc-linux.tar.gz")
-            run_command("cd /usr/local/src/noip-2.1.9-1")
-            run_command("sudo make")
-            run_command("sudo make install")
-            run_command("cd %s" % pwd_result)
-            print(Fore.GREEN + " Done.")
-            print("To later configure noip2 client, use 'sudo noip2 -C'")
-        except Exception as e:
-            logging.error(e)
-            print(Fore.RED + " Failed.")
-
     def spotify(self):
         print("Downloading and installing spotify...", end="")
         try:
-            run_command("curl -sS https://download.spotify.com/debian/pubkey.gpg | sudo apt-key add - ")
+            run_command("curl -sS https://download.spotify.com/debian/pubkey_5E3C45D7B312C643.gpg | sudo apt-key add - ")
             run_command('echo "deb http://repository.spotify.com stable non-free" '
                         '| sudo tee /etc/apt/sources.list.d/spotify.list')
             run_command("sudo apt-get update && sudo apt-get install -y spotify-client")
+            print(Fore.GREEN + " Done.")
+        except Exception as e:
+            logging.error(e)
+            print(Fore.RED + " Failed.")
+
+    def vscode(self):
+        print("Downloading and installing vscode...", end="")
+        try:
+            run_command("sudo wget -qO- https://packages.microsoft.com/keys/microsoft.asc | sudo gpg --dearmor > packages.microsoft.gpg")
+            run_command("sudo install -o root -g root -m 644 packages.microsoft.gpg /etc/apt/trusted.gpg.d/")
+            run_command("sudo sh -c 'echo \"deb [arch=amd64,arm64,armhf signed-by=/etc/apt/trusted.gpg.d/packages.microsoft.gpg] https://packages.microsoft.com/repos/code stable main\" > /etc/apt/sources.list.d/vscode.list'")
+            run_command("sudo rm -f packages.microsoft.gpg")
+            run_command("sudo apt-get update && sudo apt-get install -y code")
+            print(Fore.GREEN + " Done.")
+        except Exception as e:
+            logging.error(e)
+            print(Fore.RED + " Failed.")
+
+    def github_desktop(self):
+        print("Downloading and installing github-desktop...", end="")
+        try:
+            run_command("wget -qO - https://packagecloud.io/shiftkey/desktop/gpgkey | sudo apt-key add -")
+            run_command("sudo sh -c 'echo \"deb [arch=amd64] https://packagecloud.io/shiftkey/desktop/any/ any main\" > /etc/apt/sources.list.d/packagecloud-shiftky-desktop.list'")
+            run_command("sudo apt-get update && sudo apt-get install -y github-desktop")
+            print(Fore.GREEN + " Done.")
+        except Exception as e:
+            logging.error(e)
+            print(Fore.RED + " Failed.")
+
+    def etcher(self):
+        print("Downloading and installing etcher...", end="")
+        try:
+            run_command("curl -1sLf \ 'https://dl.cloudsmith.io/public/balena/etcher/setup.deb.sh' \ | sudo -E bash")
+            run_command("sudo apt update")
+            run_command("sudo apt-get install balena-etcher-electron")
             print(Fore.GREEN + " Done.")
         except Exception as e:
             logging.error(e)
@@ -366,6 +370,171 @@ class Install:
             logging.error(e)
             print(Fore.RED + " Failed.")
 
+    def wallpapers(self):
+        print("Downloading wallpapers to ~/Pictures/wallpapers...", end="")
+        try:
+            if not os.path.exists(self.user_home + "/Pictures/wallpapers"):
+                os.mkdir(self.user_home + "/Pictures/wallpapers")
+            run_command("sudo git clone https://gitlab.com/h0xt0n/wallpapers.git ~/Pictures/wallpapers")
+            print(Fore.GREEN + " Done.")
+        except Exception as e:
+            logging.error(e)
+            print(Fore.RED + " Failed.")
+
+    def lscript(self):
+        print("Downloading and installing lscript...", end="")
+        try:
+            pwd_result = subprocess.run("pwd", shell=True, capture_output=True, text=True).stdout
+            run_command("sudo git clone https://github.com/arismelachroinos/lscript.git ~/code/lscript")
+            run_command("sudo chmod +x ~/code/lscript/install.sh")
+            run_command("cd ~/code/lscript")
+            run_command("./install.sh")
+            run_command("cd %s" % pwd_result)
+            print(Fore.GREEN + " Done.")
+        except Exception as e:
+            logging.error(e)
+            print(Fore.RED + " Failed.")
+
+    def hiddeneye(self):
+        print("Downloading and installing hiddeneye...", end="")
+        try:
+            run_command("sudo git clone https://github.com/DarkSecDevelopers/HiddenEye.git ~/code/HiddenEye")
+            self.install_apt_package("python3-pip")
+            run_command("sudo chmod 750 --recursive ~/code/HiddenEye")
+            run_command("sudo pip3 install -r ~/code/HiddenEye/requirements.txt")
+            run_command("sudo pip3 install requests")
+            print(Fore.GREEN + " Done.")
+        except Exception as e:
+            logging.error(e)
+            print(Fore.RED + " Failed.")
+
+    def blackeye(self):
+        print("Downloading and installing blackeye...", end="")
+        try:
+            run_command("sudo git clone https://github.com/thelinuxchoice/blackeye ~/code/blackeye")
+            run_command("sudo chmod 750 --recursive ~/code/blackeye")
+            run_command("sudo chmod +x ~/code/blackeye/blackeye.sh")
+            print(Fore.GREEN + " Done.")
+        except Exception as e:
+            logging.error(e)
+            print(Fore.RED + " Failed.")
+
+    def firefox_security_toolkit(self):
+        print("Downloading firefox-security-toolkit to ~/code/firefox-security-toolkit...", end="")
+        try:
+            run_command("sudo git clone https://github.com/mazen160/Firefox-Security-Toolkit.git "
+                        "~/code/Firefox-Security-Toolkit")
+            run_command("sudo chmod 750 --recursive ~/code/Firefox-Security-Toolkit")
+            run_command("sudo chmod +x ~/code/Firefox-Security-Toolkit/firefox_security_toolkit.sh")
+            print(Fore.GREEN + " Done.")
+        except Exception as e:
+            logging.error(e)
+            print(Fore.RED + " Failed.")
+
+    def ubuntu_mono(self):
+        print("Downloading and installing ubuntu mono font...", end="")
+        try:
+            self.install_apt_package("fonts-ubuntu")
+            self.install_apt_package("fonts-ubuntu-console")
+            self.install_apt_package("ttf-ubuntu-font-family")
+            self.install_apt_package("fontconfig")
+            run_command("sudo fc-cache -f -v")
+            print(Fore.GREEN + " Done.")
+        except Exception as e:
+            logging.error(e)
+            print(Fore.RED + " Failed.")
+
+    def jetbrains_mono(self):
+        version = "1.0.3"
+        print("Downloading and installing jetbrains mono font...", end="")
+        try:
+            run_command("sudo wget -O %s/jetbrains-mono.zip "
+                        "https://download.jetbrains.com/fonts/JetBrainsMono-2.242.zip"
+                        % self.tmp_dir)
+            run_command("sudo unzip %s/jetbrains-mono.zip -d %s" % (self.tmp_dir, self.tmp_dir))
+            run_command("sudo cp %s/JetBrainsMono-%s/ttf/* /usr/local/share/fonts/" % (self.tmp_dir, version))
+            self.install_apt_package("fontconfig")
+            run_command("sudo fc-cache -f -v")
+            print(Fore.GREEN + " Done.")
+        except Exception as e:
+            logging.error(e)
+            print(Fore.RED + " Failed.")
+
+def run_command(command):
+    """
+    Run a command
+    e.g. wget, python, cat, ls, etc
+    should be called like run_command("wget")
+    :param command: Str, name of the command to be checked
+    :return: True if return code is 0 (no errors), False if non-zero
+    """
+    if not isinstance(command, str):
+        raise TypeError("Argument 'command' is not a string.")
+    if subprocess.run(command, shell=True, capture_output=True, text=True).returncode == 0:
+        return True
+    else:
+        return False
+
+def ask_for_sudo():
+    """
+    Try to sudo -v
+    :return: True if successful, False if failed.
+    """
+    if os.geteuid() != 0:
+        sudo = subprocess.run("sudo -v", shell=True, capture_output=True, text=True)
+        if sudo.returncode == 0:
+            return True
+        else:
+            return False
+    else:
+        return True
+
+def check_sudo():
+    """
+    Check if user has sudo privileges.
+    If user does not has privilege, tries to authenticate it.
+    :return: If the authentication is successful or the user has privilege, prints a dialogue and return nothing.
+    If the authentication fails, exit the program with return code 1 and a message to run as sudo.
+    """
+    print("Trying to authenticate...")
+    if os.geteuid() == 0:
+        print(Fore.GREEN + "Authenticated.\n")
+    else:
+        if not ask_for_sudo():
+            print(Fore.RED + "Authentication failed.\n")
+            exit(1)
+        else:
+            print(Fore.GREEN + "Authenticated.\n")
+
+def check_command(command):
+    """
+    Check a command existence.
+    e.g. wget, python, cat, ls, etc
+    should be called like check_command("wget")
+    :param command: Str, name of the command to be checked
+    :return: True if exists, False if does not exist
+    """
+    if not isinstance(command, str):
+        raise TypeError("Argument 'command' is not a string.")
+    command = "command -v " + str(command)
+    if subprocess.run(command, shell=True, capture_output=True, text=True).stdout == "":
+        return False
+    else:
+        return True
+
+def main():
+    init(autoreset=True)
+    install = Install()
+    check_sudo()
+
+    install.installer()
+
+if __name__ == "__main__":
+    main()
+
+"""
+The graveyard of defs:
+
     def protonvpn(self):
         print("Downloading and installing protonvpn...", end="")
         try:
@@ -374,22 +543,6 @@ class Install:
             self.install_apt_package("python3-pip")
             self.install_apt_package("python3-setuptools")
             run_command("sudo pip3 install protonvpn-cli")
-            print(Fore.GREEN + " Done.")
-        except Exception as e:
-            logging.error(e)
-            print(Fore.RED + " Failed.")
-
-    def brave(self):
-        print("Downloading and installing brave...", end="")
-        try:
-            self.install_apt_package("apt-transport-https")
-            self.install_apt_package("curl")
-            run_command("curl -s https://brave-browser-apt-release.s3.brave.com/brave-core.asc | "
-                        "sudo apt-key --keyring /etc/apt/trusted.gpg.d/brave-browser-release.gpg add -")
-            run_command('echo "deb [arch=amd64] https://brave-browser-apt-release.s3.brave.com/ stable main" | '
-                        'sudo tee /etc/apt/sources.list.d/brave-browser-release.list')
-            run_command("sudo apt update")
-            self.install_apt_package("brave-browser")
             print(Fore.GREEN + " Done.")
         except Exception as e:
             logging.error(e)
@@ -468,197 +621,20 @@ class Install:
             logging.error(e)
             print(Fore.RED + " Failed.")
 
-    def etcher(self):
-        print("Downloading and installing etcher...", end="")
-        try:
-            run_command('echo "deb https://deb.etcher.io stable etcher" | '
-                        'sudo tee /etc/apt/sources.list.d/balena-etcher.list')
-            run_command('sudo apt-key adv --keyserver hkps://keyserver.ubuntu.com:443 --recv-keys 379CE192D401AB61')
-            run_command("sudo apt update")
-            run_command("sudo apt-get install balena-etcher-electron")
-            print(Fore.GREEN + " Done.")
-        except Exception as e:
-            logging.error(e)
-            print(Fore.RED + " Failed.")
-
-    def wallpapers(self):
-        print("Downloading wallpapers to ~/Pictures/wallpapers...", end="")
-        try:
-            if not os.path.exists(self.user_home + "/Pictures/wallpapers"):
-                os.mkdir(self.user_home + "/Pictures/wallpapers")
-            run_command("sudo git clone https://gitlab.com/h0xt0n/wallpapers.git ~/Pictures/wallpapers")
-            print(Fore.GREEN + " Done.")
-        except Exception as e:
-            logging.error(e)
-            print(Fore.RED + " Failed.")
-
-    def bellumInstrumentum(self):
-        print("Downloading bellumInstrumentum to ~/tools/bellumInstrumentum...", end="")
-        try:
-            run_command("sudo git clone https://gitlab.com/h0xt0n/bellumInstrumentum.git ~/tools/bellumInstrumentum")
-            print(Fore.GREEN + " Done.")
-        except Exception as e:
-            logging.error(e)
-            print(Fore.RED + " Failed.")
-
-    def content_archiver(self):
-        print("Downloading content-archiver to ~/tools/content-archiver...", end="")
-        try:
-            run_command("sudo git clone https://gitlab.com/h0xt0n/content-archiver.git ~/tools/content-archiver")
-            print(Fore.GREEN + " Done.")
-        except Exception as e:
-            logging.error(e)
-            print(Fore.RED + " Failed.")
-
-    def lscript(self):
-        print("Downloading and installing lscript...", end="")
+    def noip2(self):
+        print("Downloading and installing noip2...", end="")
         try:
             pwd_result = subprocess.run("pwd", shell=True, capture_output=True, text=True).stdout
-            run_command("sudo git clone https://github.com/arismelachroinos/lscript.git ~/tools/lscript")
-            run_command("sudo chmod +x ~/tools/lscript/install.sh")
-            run_command("cd ~/tools/lscript")
-            run_command("./install.sh")
+            run_command("sudo wget -O /usr/local/src/noip-duc-linux.tar.gz"
+                        "http://www.no-ip.com/client/linux/noip-duc-linux.tar.gz")
+            run_command("sudo tar xf /usr/local/src/noip-duc-linux.tar.gz")
+            run_command("cd /usr/local/src/noip-2.1.9-1")
+            run_command("sudo make")
+            run_command("sudo make install")
             run_command("cd %s" % pwd_result)
             print(Fore.GREEN + " Done.")
+            print("To later configure noip2 client, use 'sudo noip2 -C'")
         except Exception as e:
             logging.error(e)
             print(Fore.RED + " Failed.")
-
-    def hiddeneye(self):
-        print("Downloading and installing hiddeneye...", end="")
-        try:
-            run_command("sudo git clone https://github.com/DarkSecDevelopers/HiddenEye.git ~/tools/HiddenEye")
-            self.install_apt_package("python3-pip")
-            run_command("sudo chmod 750 --recursive ~/tools/HiddenEye")
-            run_command("sudo pip3 install -r ~/tools/HiddenEye/requirements.txt")
-            run_command("sudo pip3 install requests")
-            print(Fore.GREEN + " Done.")
-        except Exception as e:
-            logging.error(e)
-            print(Fore.RED + " Failed.")
-
-    def blackeye(self):
-        print("Downloading and installing blackeye...", end="")
-        try:
-            run_command("sudo git clone https://github.com/thelinuxchoice/blackeye ~/tools/blackeye")
-            run_command("sudo chmod 750 --recursive ~/tools/blackeye")
-            run_command("sudo chmod +x ~/tools/blackeye/blackeye.sh")
-            print(Fore.GREEN + " Done.")
-        except Exception as e:
-            logging.error(e)
-            print(Fore.RED + " Failed.")
-
-    def firefox_security_toolkit(self):
-        print("Downloading firefox-security-toolkit to ~/tools/firefox-security-toolkit...", end="")
-        try:
-            run_command("sudo git clone https://github.com/mazen160/Firefox-Security-Toolkit.git "
-                        "~/tools/Firefox-Security-Toolkit")
-            run_command("sudo chmod 750 --recursive ~/tools/Firefox-Security-Toolkit")
-            run_command("sudo chmod +x ~/tools/Firefox-Security-Toolkit/firefox_security_toolkit.sh")
-            print(Fore.GREEN + " Done.")
-        except Exception as e:
-            logging.error(e)
-            print(Fore.RED + " Failed.")
-
-    def ubuntu_mono(self):
-        print("Downloading and installing ubuntu mono font...", end="")
-        try:
-            self.install_apt_package("fonts-ubuntu")
-            self.install_apt_package("fonts-ubuntu-console")
-            self.install_apt_package("ttf-ubuntu-font-family")
-            self.install_apt_package("fontconfig")
-            run_command("sudo fc-cache -f -v")
-            print(Fore.GREEN + " Done.")
-        except Exception as e:
-            logging.error(e)
-            print(Fore.RED + " Failed.")
-
-    def jetbrains_mono(self):
-        version = "1.0.3"
-        print("Downloading and installing jetbrains mono font...", end="")
-        try:
-            run_command("sudo wget -O %s/jetbrains-mono.zip "
-                        "https://download.jetbrains.com/fonts/JetBrainsMono-1.0.3.zip"
-                        % self.tmp_dir)
-            run_command("sudo unzip %s/jetbrains-mono.zip -d %s" % (self.tmp_dir, self.tmp_dir))
-            run_command("sudo cp %s/JetBrainsMono-%s/ttf/* /usr/local/share/fonts/" % (self.tmp_dir, version))
-            self.install_apt_package("fontconfig")
-            run_command("sudo fc-cache -f -v")
-            print(Fore.GREEN + " Done.")
-        except Exception as e:
-            logging.error(e)
-            print(Fore.RED + " Failed.")
-
-
-def run_command(command):
-    """
-    Run a command
-    e.g. wget, python, cat, ls, etc
-    should be called like run_command("wget")
-    :param command: Str, name of the command to be checked
-    :return: True if return code is 0 (no errors), False if non-zero
-    """
-    if not isinstance(command, str):
-        raise TypeError("Argument 'command' is not a string.")
-    if subprocess.run(command, shell=True, capture_output=True, text=True).returncode == 0:
-        return True
-    else:
-        return False
-
-
-def ask_for_sudo():
-    """
-    Try to sudo -v
-    :return: True if successful, False if failed.
-    """
-    if os.geteuid() != 0:
-        sudo = subprocess.run("sudo -v", shell=True, capture_output=True, text=True)
-        if sudo.returncode == 0:
-            return True
-        else:
-            return False
-    else:
-        return True
-
-
-def check_sudo():
-    """
-    Check if user has sudo privileges.
-    If user does not has privilege, tries to authenticate it.
-    :return: If the authentication is successful or the user has privilege, prints a dialogue and return nothing.
-    If the authentication fails, exit the program with return code 1 and a message to run as sudo.
-    """
-    print("Trying to authenticate...")
-    if os.geteuid() == 0:
-        print(Fore.GREEN + "Authenticated.\n")
-    else:
-        if not ask_for_sudo():
-            print(Fore.RED + "Authentication failed.\n")
-            exit(1)
-        else:
-            print(Fore.GREEN + "Authenticated.\n")
-
-
-def check_command(command):
-    """
-    Check a command existence.
-    e.g. wget, python, cat, ls, etc
-    should be called like check_command("wget")
-    :param command: Str, name of the command to be checked
-    :return: True if exists, False if does not exist
-    """
-    if not isinstance(command, str):
-        raise TypeError("Argument 'command' is not a string.")
-    command = "command -v " + str(command)
-    if subprocess.run(command, shell=True, capture_output=True, text=True).stdout == "":
-        return False
-    else:
-        return True
-
-
-
-init(autoreset=True)
-install = Install()
-check_sudo()
-
-install.installer()
+"""
