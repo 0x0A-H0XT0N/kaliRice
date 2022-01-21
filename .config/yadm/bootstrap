@@ -125,7 +125,6 @@ class Install:
 
             # repos to be cloned
             "gitlab.com/h0xt0n/wallpapers": self.wallpapers,
-            "gitlab.com/h0xt0n/bellumInstrumentum": self.bellumInstrumentum,
             "lscript": self.lscript,
             "hiddeneye": self.hiddeneye,
             "blackeye": self.blackeye,
@@ -182,16 +181,16 @@ class Install:
             count = vcount
         self.post_install()
         print(Fore.GREEN + '\033[1m' + "Bootstrap finished. Took %d seconds.\n" % int(perf_counter() - t) + '\033[0m')
-        print("Remember to run:")
+        print("Rember to:")
         print("1. run a full update: 'sudo apt update && sudo apt upgrade -y && sudo apt dist-upgrade -y && sudo apt "
-              "full-upgrade -y && sudo apt autoremove -y && sudo apt update'")
+            "full-upgrade -y && sudo apt autoremove -y && sudo apt update'")
         print("2. configure timezones: 'sudo tzselect'")
-        print("3. edit sudoers by typing 'sudo visudo' and pasting '%s  ALL=(ALL) NOPASSWD:ALL' at the last line"
-              % os.getlogin())
-        print("And then rebooting.")
-        print("The following programs may need to be configured:")
+        print("3. edit sudoers: type 'sudo visudo' and pasting '%s  ALL=(ALL) NOPASSWD:ALL' at the last line"
+            % os.getlogin())
+        print("Reboot.")
+        print("The following programs may need to be configured manually:")
         print("firefox-esr, redshitft-gtk, vscode, noip2, spotify, protonvpn, signal, riot, "
-              "discord, steam, todoist, lscript, hiddeneye, blackeye, firefox-security-toolbox.")
+            "discord, steam, todoist, lscript, hiddeneye, blackeye, firefox-security-toolbox.")
         exit(0)
 
     def post_install(self):
@@ -208,9 +207,14 @@ class Install:
             print(Fore.RED + " Failed.")
             logging.error(e)
 
-        try:    # run apt update
-            print("Running a apt update...", end="")
+        try:    # upgrade
+            print("Upgrading everything...", end="")
             run_command("sudo apt-get update")
+            run_command("sudo apt-get upgrade -y")
+            run_command("sudo apt-get dist-upgrade -y")
+            run_command("sudp apt-get full-upgrade -y")
+            run_command("sudo apt-get autoremove -y")
+            run_command("sudo apt-get update --fix-missing")
             print(Fore.GREEN + " Done.")
         except Exception as e:
             print(Fore.RED + " Failed.")
