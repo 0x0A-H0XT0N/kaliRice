@@ -9,20 +9,20 @@
 #                                       
 #                                       
 
-export PATH="$PATH:$(du "$HOME/.scripts/" | cut -f2 | tr '\n' ':')"
 export PATH="$PATH:/bin/lscript"
 export FILE="ranger"
 export BROWSER="firefox"
-export TERMINAL="guake"
-export EDITOR="vim"
-TZ='America/Fortaleza'; export TZ
+export TERMINAL="qterminal"
+export EDITOR="code"
 
 
 #!/bin/bash
 # ls aliases
-alias lsh="ls -lh"
 alias ls='ls --color=auto'
-alias lsa="ls -lha"
+alias ll='ls -lh'
+alias lla='ls -lhA'
+alias la='ls -A'
+# alias l='ls -CF'
 
 # ping alias
 alias google="ping -c4 8.8.8.8"
@@ -37,9 +37,6 @@ alias battery="upower -i $(upower -e | grep 'BAT') | grep -E 'percentage'"
 alias copy="xclip -i -selection clipboard"
 
 # more aliases 
-alias j="jobs -l"
-alias e="vim"
-alias v="vim"
 alias r="ranger"
 alias sd="sudo ranger"
 alias mkdir="mkdir -pv"
