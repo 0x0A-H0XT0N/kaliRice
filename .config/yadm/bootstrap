@@ -93,7 +93,7 @@ class Install:
             "audacity": self.apt_package,               # music editor
             "soundconverter": self.apt_package,         # handy converter
 
-            "guake": self.apt_package,                  # drop down terminal
+            "qterminal": self.apt_package,              # terminal. should come with kali
             "flameshot": self.apt_package,              # scrrenshot program, like sharex
             "stacer": self.apt_package,                 # resource monitor
             "grub-customizer": self.apt_package,        # modify/customize grub
@@ -103,7 +103,6 @@ class Install:
             "mpv": self.apt_package,                    # video player
             "filezilla": self.apt_package,              # ftp/sftp client
             "htop": self.apt_package,                   # resource monitor
-            "rofi": self.apt_package,                   # app launcher
             "ntpstat": self.apt_package,                # for ntp (network time protocol) stuff
             "detox": self.apt_package,                  # removes annoying stuff from filenames
             "xclip": self.apt_package,                  # for the "copy" alias
