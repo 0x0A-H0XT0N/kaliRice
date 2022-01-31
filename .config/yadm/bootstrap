@@ -187,8 +187,7 @@ class Install:
             % os.getlogin())
         print("Reboot.")
         print("The following programs may need to be configured manually:")
-        print("firefox-esr, redshitft-gtk, vscode, noip2, spotify, protonvpn, signal, riot, "
-            "discord, steam, todoist, lscript, hiddeneye, blackeye, firefox-security-toolbox.")
+        print("firefox-esr, redshitft-gtk, vscode, spotify, lscript, firefox-security-toolbox")
         exit(0)
 
     def post_install(self):
