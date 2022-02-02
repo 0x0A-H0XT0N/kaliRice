@@ -98,7 +98,6 @@ class Install:
             "stacer": self.apt_package,                 # resource monitor
             "grub-customizer": self.apt_package,        # modify/customize grub
             "ranger": self.apt_package,                 # cli explorer
-            "unclutter": self.apt_package,              # hides cursor after a while idle
             "redshift-gtk": self.apt_package,           # changes monitor temperature
             "mpv": self.apt_package,                    # video player
             "filezilla": self.apt_package,              # ftp/sftp client
