@@ -146,7 +146,6 @@ alias battery="upower -i $(upower -e | grep 'BAT') | grep -E 'percentage'"
 alias copy="xclip -i -selection clipboard"
 
 # more aliases 
-alias r="ranger"
 alias sd="sudo ranger"
 alias mkdir="mkdir -pv"
 alias sdn="sudo shutdown now"

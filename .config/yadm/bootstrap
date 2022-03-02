@@ -66,6 +66,7 @@ class Install:
             "libreoffice": self.apt_package,
             "virtualbox": self.apt_package,
             "qbittorrent": self.apt_package,
+            "keepassxc": self.apt_package,
 
             # tor stuff
             "tor": self.apt_package,
@@ -93,8 +94,7 @@ class Install:
             "audacity": self.apt_package,               # music editor
             "soundconverter": self.apt_package,         # handy converter
 
-            "qterminal": self.apt_package,              # terminal. should come with kali
-            "flameshot": self.apt_package,              # scrrenshot program, like sharex
+            "flameshot": self.apt_package,              # screenshot program i.e. sharex
             "stacer": self.apt_package,                 # resource monitor
             "grub-customizer": self.apt_package,        # modify/customize grub
             "ranger": self.apt_package,                 # cli explorer
@@ -102,6 +102,7 @@ class Install:
             "mpv": self.apt_package,                    # video player
             "filezilla": self.apt_package,              # ftp/sftp client
             "htop": self.apt_package,                   # resource monitor
+            "rofi": self.apt_package,                   # app launcher
             "ntpstat": self.apt_package,                # for ntp (network time protocol) stuff
             "detox": self.apt_package,                  # removes annoying stuff from filenames
             "xclip": self.apt_package,                  # for the "copy" alias
@@ -124,8 +125,9 @@ class Install:
             # repos to be cloned
             "gitlab.com/h0xt0n/wallpapers": self.wallpapers,
             "lscript": self.lscript,
+            "hiddeneye": self.hiddeneye,
+            "blackeye": self.blackeye,
             "firefox-security-toolkit": self.firefox_security_toolkit,
-            # TODO: add more awsome tools, removed: "hiddeneye", "blackeye". too many errors.
 
             # fonts
             "ubuntu-mono": self.ubuntu_mono,
@@ -178,15 +180,18 @@ class Install:
             count = vcount
         self.post_install()
         print(Fore.GREEN + '\033[1m' + "Bootstrap finished. Took %d seconds.\n" % int(perf_counter() - t) + '\033[0m')
-        print("Rember to:")
+        print("Remember to run:")
         print("1. run a full update: 'sudo apt update && sudo apt upgrade -y && sudo apt dist-upgrade -y && sudo apt "
-            "full-upgrade -y && sudo apt autoremove -y && sudo apt update'")
+              "full-upgrade -y && sudo apt autoremove -y && sudo apt update'")
         print("2. configure timezones: 'sudo tzselect'")
-        print("3. edit sudoers: type 'sudo visudo' and pasting '%s  ALL=(ALL) NOPASSWD:ALL' at the last line"
-            % os.getlogin())
-        print("Reboot.")
-        print("The following programs may need to be configured manually:")
-        print("firefox-esr, redshitft-gtk, vscode, spotify, lscript, firefox-security-toolbox")
+        print("3. edit sudoers by typing 'sudo visudo' and pasting '%s  ALL=(ALL) NOPASSWD:ALL' at the last line"
+              % os.getlogin())
+        print("4. configure LUKS nuke if on a encrypted system, reference: https://www.kali.org/blog/nuke-kali-linux-luks/")
+        print("5. manually install mega client for cloud storage")
+        print("And then rebooting.")
+        print("The following programs may need to be configured:")
+        print("firefox-esr, keepassxc, redshitft-gtk, vscode, spotify, "
+              "lscript, hiddeneye, blackeye, firefox-security-toolbox.")
         exit(0)
 
     def post_install(self):
@@ -203,14 +208,9 @@ class Install:
             print(Fore.RED + " Failed.")
             logging.error(e)
 
-        try:    # upgrade
-            print("Upgrading everything...", end="")
+        try:    # run apt update
+            print("Running a apt update...", end="")
             run_command("sudo apt-get update")
-            run_command("sudo apt-get upgrade -y")
-            run_command("sudo apt-get dist-upgrade -y")
-            run_command("sudp apt-get full-upgrade -y")
-            run_command("sudo apt-get autoremove -y")
-            run_command("sudo apt-get update --fix-missing")
             print(Fore.GREEN + " Done.")
         except Exception as e:
             print(Fore.RED + " Failed.")
@@ -382,18 +382,45 @@ class Install:
             print(Fore.RED + " Failed.")
 
     def lscript(self):
-        print("Cloning lscript...", end="")
+        print("Downloading and installing lscript...", end="")
         try:
             pwd_result = subprocess.run("pwd", shell=True, capture_output=True, text=True).stdout
             run_command("sudo git clone https://github.com/arismelachroinos/lscript.git ~/code/lscript")
             run_command("sudo chmod +x ~/code/lscript/install.sh")
+            run_command("cd ~/code/lscript")
+            run_command("./install.sh")
+            run_command("cd %s" % pwd_result)
+            print(Fore.GREEN + " Done.")
+        except Exception as e:
+            logging.error(e)
+            print(Fore.RED + " Failed.")
+
+    def hiddeneye(self):
+        print("Downloading and installing hiddeneye...", end="")
+        try:
+            run_command("sudo git clone https://github.com/DarkSecDevelopers/HiddenEye.git ~/code/HiddenEye")
+            self.install_apt_package("python3-pip")
+            run_command("sudo chmod 750 --recursive ~/code/HiddenEye")
+            run_command("sudo pip3 install -r ~/code/HiddenEye/requirements.txt")
+            run_command("sudo pip3 install requests")
+            print(Fore.GREEN + " Done.")
+        except Exception as e:
+            logging.error(e)
+            print(Fore.RED + " Failed.")
+
+    def blackeye(self):
+        print("Downloading and installing blackeye...", end="")
+        try:
+            run_command("sudo git clone https://github.com/thelinuxchoice/blackeye ~/code/blackeye")
+            run_command("sudo chmod 750 --recursive ~/code/blackeye")
+            run_command("sudo chmod +x ~/code/blackeye/blackeye.sh")
             print(Fore.GREEN + " Done.")
         except Exception as e:
             logging.error(e)
             print(Fore.RED + " Failed.")
 
     def firefox_security_toolkit(self):
-        print("Cloning firefox-security-toolkit...", end="")
+        print("Downloading firefox-security-toolkit to ~/code/firefox-security-toolkit...", end="")
         try:
             run_command("sudo git clone https://github.com/mazen160/Firefox-Security-Toolkit.git "
                         "~/code/Firefox-Security-Toolkit")
