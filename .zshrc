@@ -241,6 +241,9 @@ alias lla='ls -lhA'
 alias la='ls -A'
 # alias l='ls -CF'
 
+# ranger alias
+alias r='ranger'
+
 # ping alias
 alias google="ping -c4 8.8.8.8"
 
