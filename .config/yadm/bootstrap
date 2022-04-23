@@ -124,10 +124,6 @@ class Install:
 
             # repos to be cloned
             "gitlab.com/h0xt0n/wallpapers": self.wallpapers,
-            "lscript": self.lscript,
-            "hiddeneye": self.hiddeneye,
-            "blackeye": self.blackeye,
-            "firefox-security-toolkit": self.firefox_security_toolkit,
 
             # fonts
             "ubuntu-mono": self.ubuntu_mono,
@@ -190,8 +186,7 @@ class Install:
         print("5. manually install mega client for cloud storage")
         print("And then rebooting.")
         print("The following programs may need to be configured:")
-        print("firefox-esr, keepassxc, redshitft-gtk, vscode, spotify, "
-              "lscript, hiddeneye, blackeye, firefox-security-toolbox.")
+        print("firefox-esr, keepassxc, redshitft-gtk, vscode, spotify")
         exit(0)
 
     def post_install(self):
@@ -376,56 +371,6 @@ class Install:
             if not os.path.exists(self.user_home + "/Pictures/wallpapers"):
                 os.mkdir(self.user_home + "/Pictures/wallpapers")
             run_command("sudo git clone https://gitlab.com/h0xt0n/wallpapers.git ~/Pictures/wallpapers")
-            print(Fore.GREEN + " Done.")
-        except Exception as e:
-            logging.error(e)
-            print(Fore.RED + " Failed.")
-
-    def lscript(self):
-        print("Downloading and installing lscript...", end="")
-        try:
-            pwd_result = subprocess.run("pwd", shell=True, capture_output=True, text=True).stdout
-            run_command("sudo git clone https://github.com/arismelachroinos/lscript.git ~/code/lscript")
-            run_command("sudo chmod +x ~/code/lscript/install.sh")
-            run_command("cd ~/code/lscript")
-            run_command("./install.sh")
-            run_command("cd %s" % pwd_result)
-            print(Fore.GREEN + " Done.")
-        except Exception as e:
-            logging.error(e)
-            print(Fore.RED + " Failed.")
-
-    def hiddeneye(self):
-        print("Downloading and installing hiddeneye...", end="")
-        try:
-            run_command("sudo git clone https://github.com/DarkSecDevelopers/HiddenEye.git ~/code/HiddenEye")
-            self.install_apt_package("python3-pip")
-            run_command("sudo chmod 750 --recursive ~/code/HiddenEye")
-            run_command("sudo pip3 install -r ~/code/HiddenEye/requirements.txt")
-            run_command("sudo pip3 install requests")
-            print(Fore.GREEN + " Done.")
-        except Exception as e:
-            logging.error(e)
-            print(Fore.RED + " Failed.")
-
-    def blackeye(self):
-        print("Downloading and installing blackeye...", end="")
-        try:
-            run_command("sudo git clone https://github.com/thelinuxchoice/blackeye ~/code/blackeye")
-            run_command("sudo chmod 750 --recursive ~/code/blackeye")
-            run_command("sudo chmod +x ~/code/blackeye/blackeye.sh")
-            print(Fore.GREEN + " Done.")
-        except Exception as e:
-            logging.error(e)
-            print(Fore.RED + " Failed.")
-
-    def firefox_security_toolkit(self):
-        print("Downloading firefox-security-toolkit to ~/code/firefox-security-toolkit...", end="")
-        try:
-            run_command("sudo git clone https://github.com/mazen160/Firefox-Security-Toolkit.git "
-                        "~/code/Firefox-Security-Toolkit")
-            run_command("sudo chmod 750 --recursive ~/code/Firefox-Security-Toolkit")
-            run_command("sudo chmod +x ~/code/Firefox-Security-Toolkit/firefox_security_toolkit.sh")
             print(Fore.GREEN + " Done.")
         except Exception as e:
             logging.error(e)
