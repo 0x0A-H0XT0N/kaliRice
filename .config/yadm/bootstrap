@@ -3,7 +3,7 @@
 import os
 import subprocess
 import logging
-from sys import exit
+from sys import exit, argv
 from time import perf_counter
 from colorama import Fore, init
 
@@ -101,9 +101,6 @@ class Install:
             "redshift-gtk": self.apt_package,           # changes monitor temperature
             "mpv": self.apt_package,                    # video player
             "filezilla": self.apt_package,              # ftp/sftp client
-            "htop": self.apt_package,                   # resource monitor
-            "rofi": self.apt_package,                   # app launcher
-            "ntpstat": self.apt_package,                # for ntp (network time protocol) stuff
             "detox": self.apt_package,                  # removes annoying stuff from filenames
             "xclip": self.apt_package,                  # for the "copy" alias
             "minder": self.apt_package,                 # mind-mapping program
@@ -120,10 +117,12 @@ class Install:
             "youtube-dl": self.youtube_dl,
             "pyown": self.pyown,
             "pywal": self.pywal,
-            "ntp": self.ntp,
 
             # repos to be cloned
             "gitlab.com/h0xt0n/wallpapers": self.wallpapers,
+
+            # git cloning routine
+            "git": self.git,
 
             # fonts
             "ubuntu-mono": self.ubuntu_mono,
@@ -154,6 +153,12 @@ class Install:
                            % len(self.install_dict)))
         if choice.lower() == "n":
             exit(0)
+        # git clone routine
+        global git_routine
+        git_routine = True
+        choice = str(input("\nRun git clone routine? [Y/n]"))
+        if choice.lower() == "n":
+            git_routine = False
         count = 0
         dict_len = len(self.install_dict)
         print("Beginning installation... This may take a very long while. DO NOT QUIT WHILE IN PROGRESS!")
@@ -174,6 +179,8 @@ class Install:
             else:
                 self.install_dict[program]()
             count = vcount
+        if git_routine:
+            self.git()
         self.post_install()
         print(Fore.GREEN + '\033[1m' + "Bootstrap finished. Took %d seconds.\n" % int(perf_counter() - t) + '\033[0m')
         print("Remember to run:")
@@ -182,8 +189,10 @@ class Install:
         print("2. configure timezones: 'sudo tzselect'")
         print("3. edit sudoers by typing 'sudo visudo' and pasting '%s  ALL=(ALL) NOPASSWD:ALL' at the last line"
               % os.getlogin())
-        print("4. configure LUKS nuke if on a encrypted system, reference: https://www.kali.org/blog/nuke-kali-linux-luks/")
-        print("5. manually install mega client for cloud storage")
+        print("4. configure LUKS nuke and backup encryption key: https://www.kali.org/blog/nuke-kali-linux-luks/")
+        print("5. install mega-sync: https://mega.nz/sync")
+        print("6. install discord: https://discordapp.com/download")
+        print("7. install protonvpn: https://protonvpn.com/download")
         print("And then rebooting.")
         print("The following programs may need to be configured:")
         print("firefox-esr, keepassxc, redshitft-gtk, vscode, spotify")
@@ -265,26 +274,6 @@ class Install:
         if self.install_apt_package(package):
             print(Fore.GREEN + " Done.")
         else:
-            print(Fore.RED + " Failed.")
-
-    def ntp(self):
-        print("Downloading and configuring ntp...", end="")
-        try:
-            self.install_apt_package("ntp")
-            run_command("sudo systemctl stop ntp")
-            run_command('echo "server 0.pool.ntp.org'
-                        '\nserver 1.pool.ntp.org'
-                        '\nserver 2.pool.ntp.org'
-                        '\nserver 3.pool.ntp.org" | sudo tee /var/lib/ntp/ntp.drift')
-            run_command('echo "server 0.pool.ntp.org'
-                        '\nserver 1.pool.ntp.org'
-                        '\nserver 2.pool.ntp.org'
-                        '\nserver 3.pool.ntp.org" | sudo tee -a /etc/ntp.conf')
-            run_command("sudo systemctl start ntp")
-            run_command("sudo systemctl enable ntp")
-            print(Fore.GREEN + " Done.")
-        except Exception as e:
-            logging.error(e)
             print(Fore.RED + " Failed.")
 
     def spotify(self):
@@ -375,6 +364,40 @@ class Install:
         except Exception as e:
             logging.error(e)
             print(Fore.RED + " Failed.")
+
+    def git(self):
+        print("Running git clone routine")
+        # make code dir
+        if not os.path.exists(self.user_home + "/code"):
+            os.mkdir(self.user_home + "/code")
+        # dict of repos
+        repos = {
+            "mazen160/Firefox-Security-Toolkit": "https://github.com/mazen160/Firefox-Security-Toolkit.git",
+            "six2dez/reconftw": "https://github.com/six2dez/reconftw.git",
+            "arismelachroinos/lscript": "https://github.com/arismelachroinos/lscript.git",
+            "stanislav-web/OpenDoor": "https://github.com/stanislav-web/OpenDoor.git",
+            "mazen160/bfac": "https://github.com/mazen160/bfac.git",
+            "rapid7/metasploitable3": "https://github.com/rapid7/metasploitable3.git",
+            "ekzhang/bore": "https://github.com/ekzhang/bore.git",
+            "Bo0oM/fuzz.txt": "https://github.com/Bo0oM/fuzz.txt.git",
+            "mazen160/GithubCloner": "https://github.com/mazen160/GithubCloner.git",
+            "gwen001/pentest-tools": "https://github.com/gwen001/pentest-tools.git",
+            "vysecurity/DomLink": "https://github.com/vysecurity/DomLink.git",
+            "CoolerVoid/0d1n": "https://github.com/CoolerVoid/0d1n.git",
+            "faizann24/XssPy": "https://github.com/faizann24/XssPy.git",
+            "lefayjey/linWinPwn": "https://github.com/lefayjey/linWinPwn.git",
+            "RUB-NDS/CORStest": "https://github.com/RUB-NDS/CORStest.git",
+        }
+        # clone repos from repos dict
+        for repo in repos:
+            try:
+                print("clonning " + repo + "...", end="")
+                run_command("cd " + self.user_home + "/code && git clone " + repos[repo])
+                print(" Done.")
+            except Exception as e:
+                logging.error(e)
+                print(" Failed.")
+        
 
     def ubuntu_mono(self):
         print("Downloading and installing ubuntu mono font...", end="")
@@ -475,111 +498,23 @@ def main():
     install.installer()
 
 if __name__ == "__main__":
-    main()
+    # check for argument -h or --help
+    if len(argv) == 2 and (argv[1] == "-h" or argv[1] == "--help"):
+        print("Usage: python3 bootstrap.py")
+        print("\nOptions: --git-clone to only clone all the repos from github")
+        exit(0)
+    # check for argument --git-clone
+    if len(argv) > 1 and argv[1] == "--git-clone":
+        install = Install()
+        check_sudo
+        install.git()
+        exit(0)
+    # if another argument is passed, exit with error
+    if len(argv) > 1:
+        print("Usage: python3 bootstrap.py")
+        print("\nOptions: --git-clone to only clone all the repos from github")
+        exit(1)
+    #if no argument, run the main function
+    else:
+        main()
 
-"""
-The graveyard of defs:
-
-    def protonvpn(self):
-        print("Downloading and installing protonvpn...", end="")
-        try:
-            self.install_apt_package("openvpn")
-            self.install_apt_package("dialog")
-            self.install_apt_package("python3-pip")
-            self.install_apt_package("python3-setuptools")
-            run_command("sudo pip3 install protonvpn-cli")
-            print(Fore.GREEN + " Done.")
-        except Exception as e:
-            logging.error(e)
-            print(Fore.RED + " Failed.")
-
-    def signal(self):
-        print("Downloading and installing signal...", end="")
-        try:
-            run_command("curl -s https://updates.signal.org/desktop/apt/keys.asc | sudo apt-key add -")
-            run_command('echo "deb [arch=amd64] https://updates.signal.org/desktop/apt xenial main" | '
-                        'sudo tee -a /etc/apt/sources.list.d/signal-xenial.list')
-            run_command("sudo apt update")
-            self.install_apt_package("signal-desktop")
-            print(Fore.GREEN + " Done.")
-        except Exception as e:
-            logging.error(e)
-            print(Fore.RED + " Failed.")
-
-    def riot(self):
-        print("Downloading and installing riot...", end="")
-        try:
-            self.install_apt_package("wget")
-            self.install_apt_package("apt-transport-https")
-            run_command("sudo wget -O /usr/share/keyrings/riot-im-archive-keyring.gpg "
-                        "https://packages.riot.im/debian/riot-im-archive-keyring.gpg")
-            run_command('echo "deb [signed-by=/usr/share/keyrings/riot-im-archive-keyring.gpg] '
-                        'https://packages.riot.im/debian/ default main" | '
-                        'sudo tee /etc/apt/sources.list.d/riot-im.list')
-            run_command("sudo apt update")
-            self.install_apt_package("riot-desktop")
-            print(Fore.GREEN + " Done.")
-        except Exception as e:
-            logging.error(e)
-            print(Fore.RED + " Failed.")
-
-    def discord(self):
-        print("Downloading and installing discord...", end="")
-        try:
-
-            run_command("sudo wget -O %s/discord.deb "
-                        "https://discord.com/api/download?platform=linux&format=deb"
-                        % self.tmp_dir)
-            run_command("sudo dpkg -i %s/discord.deb" % self.tmp_dir)
-            run_command("sudo apt install -f")
-            run_command("sudo dpkg -i %s/discord.deb" % self.tmp_dir)
-            print(Fore.GREEN + " Done.")
-        except Exception as e:
-            logging.error(e)
-            print(Fore.RED + " Failed.")
-
-    def steam(self):
-        print("Downloading and installing steam...", end="")
-        try:
-            run_command("sudo wget -O %s/steam.deb "
-                        "https://steamcdn-a.akamaihd.net/client/installer/steam.deb"
-                        % self.tmp_dir)
-            run_command("sudo dpkg -i %s/steam.deb" % self.tmp_dir)
-            run_command("sudo apt install -f")
-            run_command("sudo dpkg -i %s/steam.deb" % self.tmp_dir)
-            print(Fore.GREEN + " Done.")
-        except Exception as e:
-            logging.error(e)
-            print(Fore.RED + " Failed.")
-
-    def todoist(self):
-        print("Downloading and installing todoist...", end="")
-        try:
-            run_command("sudo wget -O %s/todoist.deb "
-                        "https://github.com/KryDos/todoist-linux/releases/download/1.21/Todoist_1.21.0_amd64.deb"
-                        % self.tmp_dir)
-            run_command("sudo dpkg -i %s/todoist.deb" % self.tmp_dir)
-            run_command("sudo apt install -f")
-            run_command("sudo dpkg -i %s/todoist.deb" % self.tmp_dir)
-            print(Fore.GREEN + " Done.")
-        except Exception as e:
-            logging.error(e)
-            print(Fore.RED + " Failed.")
-
-    def noip2(self):
-        print("Downloading and installing noip2...", end="")
-        try:
-            pwd_result = subprocess.run("pwd", shell=True, capture_output=True, text=True).stdout
-            run_command("sudo wget -O /usr/local/src/noip-duc-linux.tar.gz"
-                        "http://www.no-ip.com/client/linux/noip-duc-linux.tar.gz")
-            run_command("sudo tar xf /usr/local/src/noip-duc-linux.tar.gz")
-            run_command("cd /usr/local/src/noip-2.1.9-1")
-            run_command("sudo make")
-            run_command("sudo make install")
-            run_command("cd %s" % pwd_result)
-            print(Fore.GREEN + " Done.")
-            print("To later configure noip2 client, use 'sudo noip2 -C'")
-        except Exception as e:
-            logging.error(e)
-            print(Fore.RED + " Failed.")
-"""
